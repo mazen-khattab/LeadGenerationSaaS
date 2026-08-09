@@ -1,0 +1,66 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using System.Text;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace SaaS.Api.Controllers.v1
+{
+    [Route("api/v1/[controller]")]
+    [ApiController]
+    public class ReportsController : ControllerBase
+    {
+        private readonly IActionDescriptorCollectionProvider _actionDescriptorCollectionProvider;
+
+        public ReportsController(IActionDescriptorCollectionProvider actionDescriptorCollectionProvider)
+        {
+            _actionDescriptorCollectionProvider = actionDescriptorCollectionProvider;
+        }
+
+        /// <summary>
+        /// Very simple report listing controllers and their endpoints.
+        /// Returns a plain-text report.
+        /// </summary>
+        [HttpGet("controllers")]
+        public ActionResult GetControllersReport()
+        {
+            var items = _actionDescriptorCollectionProvider.ActionDescriptors.Items;
+
+            var controllerActions = items
+                .OfType<ControllerActionDescriptor>()
+                .GroupBy(a => a.ControllerName)
+                .OrderBy(g => g.Key);
+
+            var sb = new StringBuilder();
+
+            foreach (var group in controllerActions)
+            {
+                sb.AppendLine($"Controller: {group.Key}");
+
+                foreach (var action in group.OrderBy(a => a.ActionName))
+                {
+                    // Try to get HTTP methods from action constraints; fall back to ANY when unknown
+                    var httpMethods = action.ActionConstraints?
+                        .OfType<HttpMethodActionConstraint>()
+                        .SelectMany(c => c.HttpMethods)
+                        .Distinct()
+                        .ToArray() ?? new[] { "ANY" };
+
+                    var template = action.AttributeRouteInfo?.Template ??
+                                   (action.RouteValues != null && action.RouteValues.ContainsKey("action")
+                                       ? $"api/v1/{action.ControllerName}/{action.ActionName}"
+                                       : "<unknown route>");
+
+                    sb.AppendLine($"  [{string.Join(", ", httpMethods)}] {template} -> {action.ActionName}");
+                }
+
+                sb.AppendLine();
+            }
+
+            return Content(sb.ToString(), "text/plain");
+        }
+    }
+}

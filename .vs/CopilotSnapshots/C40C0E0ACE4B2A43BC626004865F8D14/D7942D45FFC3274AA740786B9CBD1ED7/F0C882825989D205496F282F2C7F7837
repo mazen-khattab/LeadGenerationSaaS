@@ -1,0 +1,11 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace SaaS.Api.Controllers.v1
+{
+    [Route("api/v1/[controller]")]
+    [ApiController]
+    public class TargetGoupsController : ControllerBase
+    {
+    }
+}

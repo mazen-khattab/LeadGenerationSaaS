@@ -1,0 +1,23 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using SaaS.Application.Common.Interfaces;
+using SaaS.Infrastructure.Persistence;
+using SaaS.Infrastructure.Security;
+using System;
+using System.Collections.Generic;
+using System.Text;
+    
+namespace SaaS.Infrastructure.Extensions
+{
+    public static class ServiceCollectionExtensions
+    {
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
+        {
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+
+            services.AddSingleton<IEncryptionService, EncryptionService>();
+            services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+            return services;
+        }
+    }
+}

@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using SaaS.Application.Common.Interfaces;
+using SaaS.Application.Common.Models;
+using SaaS.Domain.Entities;
+using SaaS.Domain.Enums;
+
+namespace SaaS.Application.Features.Runs.Commands.Complete
+{
+    public class CompleteRunCommandHandler : IRequestHandler<CompleteRunCommand, ApiResponse<bool>>
+    {
+        private readonly IAppDbContext _context;
+        //private readonly IAppNotificationService _notificationService;
+
+        public CompleteRunCommandHandler(IAppDbContext context)
+        {
+            _context = context;
+            //_notificationService = notificationService;
+        }
+
+        public async Task<ApiResponse<bool>> Handle(CompleteRunCommand request, CancellationToken cancellationToken)
+        {
+            // 1. Fetch run
+            var run = await _context.Runs
+                .FirstOrDefaultAsync(r => r.Id == request.RunId, cancellationToken);
+
+            if (run is null)
+                return ApiResponse<bool>.Failure("Run not found.", ErrorType.NotFound);
+
+            // 2. Ensure in-progress
+            if (!string.Equals(run.Status, RunStatus.RUNNING.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return ApiResponse<bool>.Failure("Run is not in progress or has already been finalized.", ErrorType.ValidationError);
+            }
+
+            // 3. Map and insert leads
+            var leads = new List<Lead>();
+            if (request.Leads is not null && request.Leads.Any())
+            {
+                foreach (var dto in request.Leads)
+                {
+                    var lead = new Lead
+                    {
+                        UserId = run.UserId,
+                        BotId = run.BotId,
+                        GroupId = run.GroupId,
+                        AccountId = run.AccountId,
+                        RunId = run.Id,
+                        ProfileName = dto.Username ?? string.Empty,
+                        ProfileUrl = dto.ExternalId ?? string.Empty,
+                        Status = "Pending",
+                        CreatedAt = DateTime.UtcNow,
+                        Detail = new LeadDetail { MetaDataJson = string.IsNullOrWhiteSpace(dto.MetadataJson) ? "{}" : dto.MetadataJson }
+                    };
+
+                    leads.Add(lead);
+                }
+
+                await _context.Leads.AddRangeAsync(leads, cancellationToken);
+            }
+
+            // 4. Finalize run
+            run.Status = "Completed";
+            run.CollectedLeadsCount = request.Leads?.Count ?? 0;
+            run.EndedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            //// 6. Notify via IAppNotificationService (implementation will handle SignalR)
+            //try
+            //{
+            //    await _notificationService.NotifyRunCompletedAsync(run.UserId, run.Id, run.CollectedLeadsCount);
+            //}
+            //catch
+            //{
+            //    // Notification failures shouldn't block the primary operation. Log in infra later.
+            //}
+
+            return ApiResponse<bool>.Success(true, "Run completed and leads persisted.");
+        }
+    }
+}

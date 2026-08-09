@@ -1,0 +1,137 @@
+﻿using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using SaaS.Application.Common.Interfaces;
+using SaaS.Application.Common.Models;
+using SaaS.Domain.Entities;
+using MediatR;
+
+namespace SaaS.Application.Features.Runs.Commands.Create
+{
+    public class CreateRunCommandHandler : IRequestHandler<CreateRunCommand, ApiResponse<int>>
+    {
+        private readonly IAppDbContext _context;
+        private readonly IEncryptionService _encryptionService;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IN8nWebhookResolver _webhookResolver;
+        private readonly IConfiguration _configuration;
+
+        public CreateRunCommandHandler(
+            IAppDbContext context,
+            IEncryptionService encryptionService,
+            IHttpClientFactory httpClientFactory,
+            IN8nWebhookResolver webhookResolver,
+            IConfiguration configuration)
+        {
+            _context = context;
+            _encryptionService = encryptionService;
+            _httpClientFactory = httpClientFactory;
+            _webhookResolver = webhookResolver;
+            _configuration = configuration;
+        }
+
+        public async Task<ApiResponse<int>> Handle(CreateRunCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                // Fetch connected account with its cookie and bot
+                var account = await _context.ConnectedAccounts
+                    .Include(a => a.Cookie)
+                    .Include(a => a.Bot)
+                    .FirstOrDefaultAsync(a => a.Id == request.ConnectedAccountId, cancellationToken);
+
+                if (account is null)
+                    return ApiResponse<int>.Failure("Connected account not found.", Domain.Enums.ErrorType.NotFound);
+
+                // Decrypt cookies
+                var encrypted = account.Cookie?.EncryptedCookies ?? string.Empty;
+                var decryptedCookies = string.Empty;
+                try
+                {
+                    decryptedCookies = _encryptionService.Decrypt(encrypted);
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse<int>.Failure($"Failed to decrypt account cookies: {ex.Message}", Domain.Enums.ErrorType.ServerError);
+                }
+
+                // Check expiry using stored expire date
+                var expireDate = account.Cookie?.CookiesExpireDate ?? DateTime.MinValue;
+                if (expireDate <= DateTime.UtcNow)
+                {
+                    return ApiResponse<int>.Failure("Your account cookies has been expired. Pls refresh it.", Domain.Enums.ErrorType.ValidationError);
+                }
+
+                // Create run entity and persist initial state
+                var run = new Run
+                {
+                    UserId = request.UserId,
+                    BotId = account.BotId,
+                    GroupId = request.TargetGroupId,
+                    AccountId = request.ConnectedAccountId,
+                    InfoJson = string.IsNullOrWhiteSpace(request.InfoJson) ? "{}" : request.InfoJson,
+                    StartedAt = DateTime.UtcNow,
+                    Status = "Running"
+                };
+
+                await _context.Runs.AddAsync(run, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                // Resolve webhook URL
+                var botCode = account.Bot?.UiModuleCode ?? string.Empty;
+                var webhookUrl = _webhookResolver.GetWebhookUrl(botCode);
+
+                // Build payload
+                JsonElement infoElement;
+                try
+                {
+                    using var doc = JsonDocument.Parse(request.InfoJson);
+                    infoElement = doc.RootElement.Clone();
+                }
+                catch
+                {
+                    // This should have been validated earlier, but guard anyway
+                    return ApiResponse<int>.Failure("Invalid JSON format.", Domain.Enums.ErrorType.ValidationError);
+                }
+
+                var payload = new
+                {
+                    RunId = run.Id,
+                    Cookies = decryptedCookies,
+                    Info = infoElement
+                };
+
+                var client = _httpClientFactory.CreateClient();
+                var secret = _configuration["N8N:AuthSecret"] ?? _configuration["N8N:Secret"] ?? string.Empty;
+
+                using var httpRequest = new HttpRequestMessage(HttpMethod.Post, webhookUrl)
+                {
+                    Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
+                };
+
+                if (!string.IsNullOrWhiteSpace(secret))
+                {
+                    httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", secret);
+                }
+
+                var response = await client.SendAsync(httpRequest, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return ApiResponse<int>.Failure("Failed to dispatch run to automation engine.", Domain.Enums.ErrorType.ServerError);
+                }
+
+                return ApiResponse<int>.Success(run.Id, "Run started successfully.");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<int>.Failure($"Server error: {ex.Message}", Domain.Enums.ErrorType.ServerError);
+            }
+        }
+    }
+}
