@@ -8,6 +8,7 @@ namespace SaaS.Domain.Entities
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string FullName { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
 
@@ -19,7 +20,7 @@ namespace SaaS.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
-        public UserSetting? Setting { get; set; }
+        public UserSetting Setting { get; set; } = null!;
         public ICollection<UserBot> UserBots { get; set; } = new List<UserBot>();
         public ICollection<ConnectedAccount> ConnectedAccounts { get; set; } = new List<ConnectedAccount>();
         public ICollection<TargetGroup> TargetGroups { get; set; } = new List<TargetGroup>();
@@ -28,6 +29,7 @@ namespace SaaS.Domain.Entities
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
         public ICollection<UserRefreshToken> RefreshTokens { get; set; } = new List<UserRefreshToken>();
         public ICollection<BotActivityLog> BotActivityLogs { get; set; } = new List<BotActivityLog>();
+        public ICollection<Job> Jobs { get; set; } = new List<Job>();
 
     }
 }

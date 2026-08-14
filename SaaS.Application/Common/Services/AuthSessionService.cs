@@ -22,12 +22,12 @@ namespace SaaS.Application.Common.Services
         public AuthSessionService(
             IAppDbContext db,
             ITokenService tokenService,
-            IOptions<SecuritySettings> securityOptions,
+            IOptionsMonitor<SecuritySettings> securityOptions,
             ILogger<AuthSessionService> logger)
         {
             _db = db;
             _tokenService = tokenService;
-            _securitySettings = securityOptions?.Value ?? throw new ArgumentNullException(nameof(securityOptions));
+            _securitySettings = securityOptions?.CurrentValue ?? throw new ArgumentNullException(nameof(securityOptions));
             _logger = logger;
         }
 

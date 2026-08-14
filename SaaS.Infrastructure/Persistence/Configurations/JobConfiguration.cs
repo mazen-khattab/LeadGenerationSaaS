@@ -19,6 +19,9 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .IsRequired()
             .HasColumnType("varchar(100)");
 
+        builder.Property(j => j.UserId)
+            .IsRequired();
+
         // BotId is a plain nullable column, not a navigated relationship: the spec
         // gives it no "FK -> Bot" designation (unlike RunId below), so it's treated
         // as a denormalized reference for fast filtering/reporting only.
@@ -47,6 +50,11 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .WithMany(r => r.Jobs)
             .HasForeignKey(j => j.RunId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(j => j.User)
+            .WithMany(u => u.Jobs)
+            .HasForeignKey(j => j.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(j => j.Status)
             .HasDatabaseName("IX_Jobs_Status");

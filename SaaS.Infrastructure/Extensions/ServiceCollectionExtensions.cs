@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http.Resilience;
+using Polly;
 using SaaS.Application.Common.Interfaces;
 using SaaS.Application.Common.Services;
 using SaaS.Infrastructure.Persistence;
-using SaaS.Infrastructure.Security;
 using SaaS.Infrastructure.Services;
+using SaaS.Infrastructure.Strategies;
+
 
 namespace SaaS.Infrastructure.Extensions
 {
@@ -26,18 +29,45 @@ namespace SaaS.Infrastructure.Extensions
             services.AddSingleton<IEncryptionService, EncryptionService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ISessionTokenValidator, SessionTokenValidator>();
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IPasswordHasherService, PasswordHasherService>();
             services.AddScoped<IAuthSessionService, AuthSessionService>();
+            services.AddScoped<IUserBotService, UserBotService>();
 
-            // n8n and network services
+            services.AddScoped<IExternalSystemRequestStrategy, N8nRequestStrategy>();
+            services.AddScoped<IExternalSystemRequestStrategy, NodeWorkerRequestStrategy>();
+            services.AddScoped<INetworkClient, NetworkClient>();
+
             services.AddHttpClient(NetworkClient.NamedClient, client =>
             {
                 client.Timeout = TimeSpan.FromSeconds(30);
+            })
+            .AddResilienceHandler("external-systems-pipeline", builder =>
+            {
+                builder.AddRetry(new HttpRetryStrategyOptions
+                {
+                    MaxRetryAttempts = 3,
+                    BackoffType = DelayBackoffType.Exponential,
+                    ShouldHandle = args => ValueTask.FromResult(
+                        HttpClientResiliencePredicates.IsTransient(args.Outcome))
+                });
+
+                builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
+                {
+                    FailureRatio = 1.0, 
+                    MinimumThroughput = 5,
+                    SamplingDuration = TimeSpan.FromSeconds(30),
+                    BreakDuration = TimeSpan.FromSeconds(30),
+                    ShouldHandle = args => ValueTask.FromResult(
+                        HttpClientResiliencePredicates.IsTransient(args.Outcome))
+                });
             });
 
-            services.AddSingleton<IN8nWebhookResolver, N8nWebhookResolver>();
-            services.AddScoped<INetworkClient, NetworkClient>();
 
+            // SingalR services
+            services.AddSignalR();
+            services.AddTransient<IAppNotificationService, SignalRNotificationService>();
+
+            services.AddSingleton<IN8nWebhookResolver, N8nWebhookResolver>();
             return services;
         }
     }

@@ -1,4 +1,5 @@
 using SaaS.Application.Common.Models;
+using SaaS.Domain.Enums;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,9 +10,8 @@ namespace SaaS.Application.Common.Interfaces
     /// </summary>
     public interface INetworkClient
     {
-        /// <summary>
-        /// Posts the provided object as JSON to the specified url. Returns true when the response is a success 2xx.
-        /// </summary>
-        Task<NetworkResult> PostJsonAsync(string url, object payload, CancellationToken cancellationToken = default);
+        Task<NetworkResult> PostJsonAsync(string endpoint, object payload, ExternalSystem targetSystem, CancellationToken cancellationToken = default);
+        Task<NetworkResult> GetAsync(string endpoint, ExternalSystem targetSystem, CancellationToken cancellationToken = default);
+
     }
 }

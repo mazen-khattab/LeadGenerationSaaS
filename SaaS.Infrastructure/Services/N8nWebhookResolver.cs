@@ -14,11 +14,11 @@ namespace SaaS.Infrastructure.Services
     {
         private readonly Dictionary<string, string> _n8nWebhooks;
 
-        public N8nWebhookResolver(IOptions<Dictionary<string, string>> options)
+        public N8nWebhookResolver(IOptionsMonitor<Dictionary<string, string>> options)
         {
             _n8nWebhooks = new Dictionary<string, string>
                 (
-                    options.Value ?? [],
+                    options.CurrentValue ?? [],
                     StringComparer.OrdinalIgnoreCase
                 );
         }

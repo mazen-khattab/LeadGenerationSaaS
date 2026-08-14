@@ -18,28 +18,25 @@ namespace SaaS.Application.Features.Runs.Commands.Create
         private readonly IEncryptionService _encryptionService;
         private readonly INetworkClient _networkClient;
         private readonly IN8nWebhookResolver _webhookResolver;
+        private readonly IUserBotService _userBotService;
 
         public CreateRunCommandHandler(
             IAppDbContext context,
             IEncryptionService encryptionService,
             INetworkClient networkClient,
-            IN8nWebhookResolver webhookResolver)
+            IN8nWebhookResolver webhookResolver,
+            IUserBotService userBotService)
         {
             _context = context;
             _encryptionService = encryptionService;
             _networkClient = networkClient;
             _webhookResolver = webhookResolver;
+            _userBotService = userBotService;
         }
 
         public async Task<ApiResponse<int>> Handle(CreateRunCommand request, CancellationToken cancellationToken)
         {
-            var hasBot = await _context.UserBots
-                .AsNoTracking()
-                .AnyAsync(
-                        ub => ub.UserId == request.UserId &&
-                        ub.Id == request.CreateRunDto.BotId,
-                        cancellationToken
-                    );
+            var hasBot = await _userBotService.OwnerShipCheck(request.UserId, request.CreateRunDto.BotId, cancellationToken);
 
             if (!hasBot)
             {
@@ -86,7 +83,6 @@ namespace SaaS.Application.Features.Runs.Commands.Create
             };
 
             await _context.Runs.AddAsync(run, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
 
             // Resolve webhook URL
             var botCode = account.Bot?.UiModuleCode ?? string.Empty;
@@ -113,12 +109,13 @@ namespace SaaS.Application.Features.Runs.Commands.Create
             };
 
             // Delegate HTTP posting to INetworkClient (implementation is infrastructure-specific and will handle auth)
-            var sent = await _networkClient.PostJsonAsync(webhookUrl, payload, cancellationToken);
+            var sent = await _networkClient.PostJsonAsync(webhookUrl, payload, ExternalSystem.N8n, cancellationToken);
             if (!sent.IsSuccess)
             {
                 return ApiResponse<int>.Failure("Failed to dispatch run to automation engine.", ErrorType.ServerError);
             }
 
+            await _context.SaveChangesAsync(cancellationToken);
             return ApiResponse<int>.Success(run.Id, "Run started successfully.");
         }
     }

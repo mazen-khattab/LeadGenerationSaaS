@@ -1,96 +1,110 @@
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SaaS.Application.Common.Interfaces;
 using SaaS.Application.Common.Models;
 using SaaS.Application.Common.Settings;
+using SaaS.Domain.Enums;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace SaaS.Infrastructure.Services
 {
     public class NetworkClient : INetworkClient
     {
-        public const string NamedClient = "N8nClient";
+        public const string NamedClient = "ExternalServicesClient";
+
+        private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly N8nSecurity _n8nSecurity;
+        private readonly IReadOnlyDictionary<ExternalSystem, IExternalSystemRequestStrategy> _externalSystemRequestStrategies;
         private readonly ILogger<NetworkClient> _logger;
 
         public NetworkClient(
             IHttpClientFactory httpClientFactory,
-            IOptions<N8nSecurity> options,
+            IEnumerable<IExternalSystemRequestStrategy> externalSystemRequestStrategies,
             ILogger<NetworkClient> logger)
         {
             _httpClientFactory = httpClientFactory;
-            _n8nSecurity = options.Value;
+            _externalSystemRequestStrategies = externalSystemRequestStrategies.ToDictionary(d => d.System);
             _logger = logger;
         }
 
-        public async Task<NetworkResult> PostJsonAsync(string url, object payload, CancellationToken cancellationToken = default)
+        public Task<NetworkResult> PostJsonAsync(string endpoint, object payload, ExternalSystem targetSystem, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                _logger.LogWarning("PostJsonAsync called with an empty URL.");
-                return NetworkResult.Fail(null, "URL cannot be empty.");
-            }
+            if (string.IsNullOrWhiteSpace(endpoint))
+                return Task.FromResult(NetworkResult.Fail(null, "Endpoint cannot be null or empty."));
 
             if (payload is null)
-            {
-                _logger.LogWarning("PostJsonAsync called with a null payload for {Url}", url);
-                return NetworkResult.Fail(null, "Payload cannot be null.");
-            }
+                return Task.FromResult(NetworkResult.Fail(null, "Payload cannot be null."));
 
-            using var request = BuildRequest(url, payload);
+            var request = BuildRequest(HttpMethod.Post, endpoint, targetSystem);
+            request.Content = JsonContent.Create(payload, options: JsonOptions);
 
+            return ExecuteRequestAsync(request, cancellationToken);
+        }
+
+        public Task<NetworkResult> GetAsync(string endpoint, ExternalSystem targetSystem, CancellationToken cancellationToken = default)
+        {
+            var request = BuildRequest(HttpMethod.Get, endpoint, targetSystem);
+            return ExecuteRequestAsync(request, cancellationToken);
+        }
+
+        private HttpRequestMessage BuildRequest(HttpMethod method, string endpoint, ExternalSystem targetSystem)
+        {
+            if (!_externalSystemRequestStrategies.TryGetValue(targetSystem, out var strategy))
+                throw new NotSupportedException($"External system '{targetSystem}' has no registered request startegy.");
+
+            var request = new HttpRequestMessage(method, BuildUri(strategy.ResolveBaseUrl(endpoint), endpoint));
+            strategy.ApplyAuthentication(request);
+            return request;
+        }
+
+        private static Uri BuildUri(string baseUrl, string endpoint)
+        {
+            if (string.IsNullOrWhiteSpace(baseUrl))
+                return new Uri(endpoint, UriKind.Absolute);
+
+            return new Uri($"{baseUrl.TrimEnd('/')}/{endpoint.TrimStart('/')}");
+        }
+
+        private async Task<NetworkResult> ExecuteRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
             try
             {
-                var client = _httpClientFactory.CreateClient(NamedClient);
-                var response = await client.SendAsync(request, cancellationToken);
+                var httpClient = _httpClientFactory.CreateClient(NamedClient);
+                using var response = await httpClient.SendAsync(request, cancellationToken);
+                var body = await response.Content.ReadAsStringAsync(cancellationToken);
 
                 if (response.IsSuccessStatusCode)
-                {
-                    return NetworkResult.Ok((int)response.StatusCode);
-                }
+                    return NetworkResult.Ok((int)response.StatusCode, body);
 
                 _logger.LogWarning(
-                    "POST to {Url} returned non-success status {StatusCode}",
-                    url, response.StatusCode);
+                    "Request to {Url} returned non-success status {StatusCode}",
+                    request.RequestUri, response.StatusCode);
 
-                return NetworkResult.Fail((int)response.StatusCode, $"Webhook returned status {(int)response.StatusCode}.");
+                return NetworkResult.Fail((int)response.StatusCode, $"External system returned status {(int)response.StatusCode}.", body);
             }
             catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogError(ex, "POST to {Url} timed out", url);
+                _logger.LogError(ex, "Request to {Url} timed out", request.RequestUri);
                 return NetworkResult.Fail(null, "Request timed out.");
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "POST to {Url} failed due to a network/connection error", url);
-                return NetworkResult.Fail(null, "Network error occurred while calling the webhook.");
+                _logger.LogError(ex, "Request to {Url} failed due to a network/connection error", request.RequestUri);
+                return NetworkResult.Fail(null, "Network error occurred.");
             }
-            catch (OperationCanceledException)
+            finally
             {
-                // Caller explicitly cancelled the request (e.g. client disconnected).
-                // Let it propagate instead of masking it as a normal failure.
-                throw;
+                // Disposed here (not via "using var request" in PostJsonAsync/GetAsync) because those
+                // two methods are NOT async - they return this method's Task directly without awaiting it.
+                // If the request were disposed in their scope, disposal would happen the instant the
+                // synchronous method body finishes, likely before the HTTP call actually completes.
+                request.Dispose();
             }
         }
 
-        private HttpRequestMessage BuildRequest(string url, object payload)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, url)
-            {
-                Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
-            };
-
-            var secret = _n8nSecurity.AuthSecret;
-            if (!string.IsNullOrWhiteSpace(secret))
-            {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", secret);
-            }
-
-            return request;
-        }
     }
 }

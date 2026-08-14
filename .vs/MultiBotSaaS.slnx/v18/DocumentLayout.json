@@ -3,20 +3,55 @@
   "WorkspaceRootPath": "F:\\Mazen\\Projects\\MultiBotSaaS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|f:\\mazen\\projects\\multibotsaas\\saas.infrastructure\\services\\signalrnotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|solutionrelative:saas.infrastructure\\services\\signalrnotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\common\\services\\authsessionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\common\\services\\authsessionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|f:\\mazen\\projects\\multibotsaas\\saas.infrastructure\\hubs\\appnotificationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|solutionrelative:saas.infrastructure\\hubs\\appnotificationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\auth\\commands\\user\\refreshtoken\\userrefreshtokencommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\auth\\commands\\user\\refreshtoken\\userrefreshtokencommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\runs\\commands\\complete\\completeruncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\runs\\commands\\complete\\completeruncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|f:\\mazen\\projects\\multibotsaas\\saas.api\\controllers\\v1\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|solutionrelative:saas.api\\controllers\\v1\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\connectedaccounts\\commands\\add\\addconnectedaccountcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\connectedaccounts\\commands\\add\\addconnectedaccountcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\settings\\commands\\manage\\manageusersettingscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\settings\\commands\\manage\\manageusersettingscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|f:\\mazen\\projects\\multibotsaas\\saas.infrastructure\\services\\passwordhasherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|solutionrelative:saas.infrastructure\\services\\passwordhasherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\auth\\commands\\admin\\refreshtoken\\adminrefreshtokencommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\auth\\commands\\admin\\refreshtoken\\adminrefreshtokencommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\auth\\commands\\admin\\login\\adminlogincommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\auth\\commands\\admin\\login\\adminlogincommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\runs\\commands\\create\\createruncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\runs\\commands\\create\\createruncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|f:\\mazen\\projects\\multibotsaas\\saas.infrastructure\\services\\networkclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|solutionrelative:saas.infrastructure\\services\\networkclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|f:\\mazen\\projects\\multibotsaas\\saas.infrastructure\\extensions\\servicecollectionextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|solutionrelative:saas.infrastructure\\extensions\\servicecollectionextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|f:\\mazen\\projects\\multibotsaas\\saas.api\\controllers\\v1\\runscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|solutionrelative:saas.api\\controllers\\v1\\runscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mazen\\AppData\\Roaming\\Microsoft\\UserSecrets\\a479a8bb-7644-4cd5-b9ab-00a287ce7dca\\secrets.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,57 +61,174 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "RunsController.cs",
-              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\RunsController.cs",
-              "RelativeDocumentMoniker": "SaaS.Api\\Controllers\\v1\\RunsController.cs",
-              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\RunsController.cs",
-              "RelativeToolTip": "SaaS.Api\\Controllers\\v1\\RunsController.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAxwBwAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-08T12:37:04.215Z",
-              "IsPinned": true
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "SignalRNotificationService.cs",
-              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\SignalRNotificationService.cs",
-              "RelativeDocumentMoniker": "SaaS.Infrastructure\\Services\\SignalRNotificationService.cs",
-              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\SignalRNotificationService.cs",
-              "RelativeToolTip": "SaaS.Infrastructure\\Services\\SignalRNotificationService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABFAAAAAAAAAA==",
+              "Title": "AuthSessionService.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Common\\Services\\AuthSessionService.cs",
+              "RelativeDocumentMoniker": "SaaS.Application\\Common\\Services\\AuthSessionService.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Common\\Services\\AuthSessionService.cs",
+              "RelativeToolTip": "SaaS.Application\\Common\\Services\\AuthSessionService.cs",
+              "ViewState": "AgIAAIUAAAAAAAAAAAAAAI0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-08T22:00:16.553Z",
+              "WhenOpened": "2026-08-14T12:23:49.489Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "AppNotificationHub.cs",
-              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Hubs\\AppNotificationHub.cs",
-              "RelativeDocumentMoniker": "SaaS.Infrastructure\\Hubs\\AppNotificationHub.cs",
-              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Hubs\\AppNotificationHub.cs",
-              "RelativeToolTip": "SaaS.Infrastructure\\Hubs\\AppNotificationHub.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAB0AAABGAAAAAAAAAA==",
+              "Title": "UserRefreshTokenCommandHandler.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Auth\\Commands\\User\\RefreshToken\\UserRefreshTokenCommandHandler.cs",
+              "RelativeDocumentMoniker": "SaaS.Application\\Features\\Auth\\Commands\\User\\RefreshToken\\UserRefreshTokenCommandHandler.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Auth\\Commands\\User\\RefreshToken\\UserRefreshTokenCommandHandler.cs",
+              "RelativeToolTip": "SaaS.Application\\Features\\Auth\\Commands\\User\\RefreshToken\\UserRefreshTokenCommandHandler.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAA1wAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-08T21:11:42.396Z"
+              "WhenOpened": "2026-08-14T12:23:27.219Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "CompleteRunCommandHandler.cs",
-              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Runs\\Commands\\Complete\\CompleteRunCommandHandler.cs",
-              "RelativeDocumentMoniker": "SaaS.Application\\Features\\Runs\\Commands\\Complete\\CompleteRunCommandHandler.cs",
-              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Runs\\Commands\\Complete\\CompleteRunCommandHandler.cs",
-              "RelativeToolTip": "SaaS.Application\\Features\\Runs\\Commands\\Complete\\CompleteRunCommandHandler.cs",
-              "ViewState": "AgIAAGIAAAAAAAAAAAAowHkAAAAPAAAAAAAAAA==",
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\AuthController.cs",
+              "RelativeDocumentMoniker": "SaaS.Api\\Controllers\\v1\\AuthController.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\AuthController.cs",
+              "RelativeToolTip": "SaaS.Api\\Controllers\\v1\\AuthController.cs",
+              "ViewState": "AgIAAEcAAAAAAAAAAAAwwHcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-08T13:37:01.064Z"
+              "WhenOpened": "2026-08-14T12:22:59.377Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AddConnectedAccountCommandHandler.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\ConnectedAccounts\\Commands\\Add\\AddConnectedAccountCommandHandler.cs",
+              "RelativeDocumentMoniker": "SaaS.Application\\Features\\ConnectedAccounts\\Commands\\Add\\AddConnectedAccountCommandHandler.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\ConnectedAccounts\\Commands\\Add\\AddConnectedAccountCommandHandler.cs",
+              "RelativeToolTip": "SaaS.Application\\Features\\ConnectedAccounts\\Commands\\Add\\AddConnectedAccountCommandHandler.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T12:22:34.529Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ManageUserSettingsCommand.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Settings\\Commands\\Manage\\ManageUserSettingsCommand.cs",
+              "RelativeDocumentMoniker": "SaaS.Application\\Features\\Settings\\Commands\\Manage\\ManageUserSettingsCommand.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Settings\\Commands\\Manage\\ManageUserSettingsCommand.cs",
+              "RelativeToolTip": "SaaS.Application\\Features\\Settings\\Commands\\Manage\\ManageUserSettingsCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T12:22:14.573Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PasswordHasherService.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\PasswordHasherService.cs",
+              "RelativeDocumentMoniker": "SaaS.Infrastructure\\Services\\PasswordHasherService.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\PasswordHasherService.cs",
+              "RelativeToolTip": "SaaS.Infrastructure\\Services\\PasswordHasherService.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T12:21:56.4Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AdminRefreshTokenCommandHandler.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Auth\\Commands\\Admin\\RefreshToken\\AdminRefreshTokenCommandHandler.cs",
+              "RelativeDocumentMoniker": "SaaS.Application\\Features\\Auth\\Commands\\Admin\\RefreshToken\\AdminRefreshTokenCommandHandler.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Auth\\Commands\\Admin\\RefreshToken\\AdminRefreshTokenCommandHandler.cs",
+              "RelativeToolTip": "SaaS.Application\\Features\\Auth\\Commands\\Admin\\RefreshToken\\AdminRefreshTokenCommandHandler.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAA1wAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T12:21:21.791Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AdminLoginCommandHandler.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Auth\\Commands\\Admin\\Login\\AdminLoginCommandHandler.cs",
+              "RelativeDocumentMoniker": "SaaS.Application\\Features\\Auth\\Commands\\Admin\\Login\\AdminLoginCommandHandler.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Auth\\Commands\\Admin\\Login\\AdminLoginCommandHandler.cs",
+              "RelativeToolTip": "SaaS.Application\\Features\\Auth\\Commands\\Admin\\Login\\AdminLoginCommandHandler.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T12:21:11.934Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "secrets.json",
+              "DocumentMoniker": "C:\\Users\\mazen\\AppData\\Roaming\\Microsoft\\UserSecrets\\a479a8bb-7644-4cd5-b9ab-00a287ce7dca\\secrets.json",
+              "ToolTip": "C:\\Users\\mazen\\AppData\\Roaming\\Microsoft\\UserSecrets\\a479a8bb-7644-4cd5-b9ab-00a287ce7dca\\secrets.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-08-14T12:06:49.653Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "RunsController.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\RunsController.cs",
+              "RelativeDocumentMoniker": "SaaS.Api\\Controllers\\v1\\RunsController.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\RunsController.cs",
+              "RelativeToolTip": "SaaS.Api\\Controllers\\v1\\RunsController.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAgwCoAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T12:02:22.47Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CreateRunCommandHandler.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Runs\\Commands\\Create\\CreateRunCommandHandler.cs",
+              "RelativeDocumentMoniker": "SaaS.Application\\Features\\Runs\\Commands\\Create\\CreateRunCommandHandler.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Runs\\Commands\\Create\\CreateRunCommandHandler.cs",
+              "RelativeToolTip": "SaaS.Application\\Features\\Runs\\Commands\\Create\\CreateRunCommandHandler.cs",
+              "ViewState": "AgIAAEkAAAAAAAAAAAAYwGkAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T11:53:54.992Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "NetworkClient.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\NetworkClient.cs",
+              "RelativeDocumentMoniker": "SaaS.Infrastructure\\Services\\NetworkClient.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\NetworkClient.cs",
+              "RelativeToolTip": "SaaS.Infrastructure\\Services\\NetworkClient.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAowDYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T09:52:08.949Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ServiceCollectionExtensions.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
+              "RelativeDocumentMoniker": "SaaS.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
+              "RelativeToolTip": "SaaS.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAQwCkAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T09:38:52.555Z",
+              "EditorCaption": ""
             }
           ]
         }

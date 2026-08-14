@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SaaS.Application.Common.Settings
 {
-    public class N8nWebhooks
+    public sealed class N8nWebhooks
     {
         public const string SectionName = "N8nWebhooks";
         public string FacebookMemberScraper { get; set; } = string.Empty;

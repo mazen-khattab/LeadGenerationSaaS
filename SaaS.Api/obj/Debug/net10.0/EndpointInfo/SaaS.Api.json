@@ -332,6 +332,93 @@
         }
       }
     },
+    "/api/Leads/leads/{botId}": {
+      "get": {
+        "tags": [
+          "Leads"
+        ],
+        "parameters": [
+          {
+            "name": "botId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "statusFilter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Leads/bot/messaging-preview/{botId}": {
+      "get": {
+        "tags": [
+          "Leads"
+        ],
+        "parameters": [
+          {
+            "name": "botId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/Reports/controllers": {
       "get": {
         "tags": [
@@ -381,6 +468,18 @@
       }
     },
     "/api/v1/Reports/services": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/Reports/Entities": {
       "get": {
         "tags": [
           "Reports"
@@ -772,6 +871,7 @@
           "externalId",
           "username",
           "fullName",
+          "aiMessage",
           "metadataJson"
         ],
         "type": "object",
@@ -783,6 +883,9 @@
             "type": "string"
           },
           "fullName": {
+            "type": "string"
+          },
+          "aiMessage": {
             "type": "string"
           },
           "metadataJson": {
@@ -854,6 +957,9 @@
     },
     {
       "name": "ConnectedAccounts"
+    },
+    {
+      "name": "Leads"
     },
     {
       "name": "Reports"

@@ -10,7 +10,7 @@ namespace SaaS.Infrastructure.DataSeeding
 {
     public static class UsersSeeding
     {
-        public static async Task SeedingAsync(IAppDbContext context, IPasswordHasher hasher, IHttpContextAccessor _httpContext)
+        public static async Task SeedingAsync(IAppDbContext context, IPasswordHasherService hasher, IHttpContextAccessor _httpContext)
         {
             ArgumentNullException.ThrowIfNull(context);
             ArgumentNullException.ThrowIfNull(hasher);
@@ -22,6 +22,7 @@ namespace SaaS.Infrastructure.DataSeeding
                 {
                     Id = Guid.NewGuid(),
                     FullName = "Mazen Khattab",
+                    PhoneNumber = "01023839637",
                     Email = "mazenkhtab11@gmail.com",
                     PasswordHash = hasher.HashPassword("Mak.12"),
                     CurrentSessionToken = Guid.NewGuid().ToString("N"),

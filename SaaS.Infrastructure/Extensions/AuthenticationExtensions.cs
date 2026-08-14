@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SaaS.Application.Common.Settings;
-using SaaS.Infrastructure.Security;
+using SaaS.Infrastructure.Services;
 
 namespace SaaS.Infrastructure.Extensions;
 

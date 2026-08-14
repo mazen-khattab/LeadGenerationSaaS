@@ -15,13 +15,13 @@ namespace SaaS.Application.Features.Auth.Commands.Admin.Login
     internal class AdminLoginCommandHandler : IRequestHandler<AdminLoginCommand, ApiResponse<AuthLoginResponseDto>>
     {
         private readonly IAppDbContext _db;
-        private readonly IPasswordHasher _passwordHasher;
+        private readonly IPasswordHasherService _passwordHasher;
         private readonly IAuthSessionService _authSessionService;
         private readonly ILogger<AdminLoginCommandHandler> _logger;
 
         public AdminLoginCommandHandler(
             IAppDbContext db,
-            IPasswordHasher passwordHasher,
+            IPasswordHasherService passwordHasher,
             ILogger<AdminLoginCommandHandler> logger,
             IAuthSessionService authSessionService)
         {

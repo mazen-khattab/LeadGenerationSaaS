@@ -1,0 +1,55 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SaaS.Application.Features.Worker.Commands.DispatchMessaging;
+using SaaS.Application.Common.Dtos;
+using SaaS.Application.Common.Models;
+using System.Security.Claims;
+
+namespace SaaS.Api.Controllers.v1
+{
+    [Route("api/v1/[controller]")]
+    [Authorize]
+    [ApiController]
+    public class WorkerController : ControllerBase
+    {
+        private readonly ISender _sender;
+
+        public WorkerController(ISender sender)
+        {
+            _sender = sender;
+        }
+
+        private Guid GetUserId() => Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId) ? userId : Guid.Empty;
+
+        [HttpPost("dispatch-messaging")]
+        public async Task<ActionResult<object>> DispatchMessaging([FromBody] DispatchMessagingJobCommandDto dto)
+        {
+            var userId = GetUserId();
+
+            var command = new DispatchMessagingJobCommand(userId, dto.BotId, dto.LeadIds);
+            var result = await _sender.Send(command);
+
+            if (result is not null && result.IsSuccess)
+            {
+                return Ok(result);
+            }
+
+            int statusCode = result!.ErrorType.ToHttpStatusCode();
+
+            var errorResponse = new ApiErrorResponse
+            {
+                IsSuccess = false,
+                StatusCode = statusCode,
+                Message = result?.Message ?? "Failure during operation.",
+                Path = HttpContext.Request.Path,
+                Method = HttpContext.Request.Method,
+                TraceId = HttpContext.TraceIdentifier
+            };
+
+            return StatusCode(statusCode, errorResponse);
+        }
+    }
+
+    public record DispatchMessagingJobCommandDto(int BotId, List<long> LeadIds);
+}

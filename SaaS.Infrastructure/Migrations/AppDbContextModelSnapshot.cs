@@ -193,12 +193,17 @@ namespace SaaS.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RunId");
 
                     b.HasIndex("Status")
                         .HasDatabaseName("IX_Jobs_Status");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Jobs", (string)null);
                 });
@@ -231,6 +236,9 @@ namespace SaaS.Infrastructure.Migrations
 
                     b.Property<int?>("GroupId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("ProcessedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ProfileName")
                         .IsRequired()
@@ -576,6 +584,10 @@ namespace SaaS.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -745,7 +757,15 @@ namespace SaaS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SaaS.Domain.Entities.User", "User")
+                        .WithMany("Jobs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Run");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SaaS.Domain.Entities.Lead", b =>
@@ -963,13 +983,16 @@ namespace SaaS.Infrastructure.Migrations
 
                     b.Navigation("ConnectedAccounts");
 
+                    b.Navigation("Jobs");
+
                     b.Navigation("Leads");
 
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("Runs");
 
-                    b.Navigation("Setting");
+                    b.Navigation("Setting")
+                        .IsRequired();
 
                     b.Navigation("TargetGroups");
 

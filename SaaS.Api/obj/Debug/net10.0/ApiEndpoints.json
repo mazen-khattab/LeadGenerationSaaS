@@ -1,5 +1,52 @@
 [
   {
+    "ContainingType": "SaaS.Api.Controllers.v1.LeadsController",
+    "Method": "GetMessagingPreview",
+    "RelativePath": "api/Leads/bot/messaging-preview/{botId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "botId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SaaS.Api.Controllers.v1.LeadsController",
+    "Method": "GetAll",
+    "RelativePath": "api/Leads/leads/{botId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "botId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "statusFilter",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "SaaS.Api.Controllers.v1.AdminAuthController",
     "Method": "Login",
     "RelativePath": "api/v1/admin/auth/login",
@@ -214,6 +261,16 @@
     "ContainingType": "SaaS.Api.Controllers.v1.ReportsController",
     "Method": "GetDtosReport",
     "RelativePath": "api/v1/Reports/dtos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SaaS.Api.Controllers.v1.ReportsController",
+    "Method": "GetEntitiesReport",
+    "RelativePath": "api/v1/Reports/Entities",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

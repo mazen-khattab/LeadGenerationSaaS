@@ -9,6 +9,7 @@ using SaaS.Application.Features.Users.Queries.GetUserById;
 using SaaS.Domain.Entities;
 using SaaS.Infrastructure.DataSeeding;
 using SaaS.Infrastructure.Extensions;
+using SaaS.Infrastructure.Hubs;
 using System.Data;
 using System.Text.Json.Serialization;
 
@@ -23,12 +24,13 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddInfrastructure(connectionString);
+builder.Services.AddInfrastructure(connectionString ?? "");
 
-// 1. Register for Dependency Injection
 builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection(SecuritySettings.SectionName));
-builder.Services.Configure<N8nSecurity>(builder.Configuration.GetSection(N8nSecurity.SectionName));
+builder.Services.Configure<N8nOptions>(builder.Configuration.GetSection(N8nOptions.SectionName));
+builder.Services.Configure<WorkerOptions>(builder.Configuration.GetSection(WorkerOptions.SectionName));
 builder.Services.Configure<Dictionary<string, string>>(builder.Configuration.GetSection("N8nWebhooks"));
+builder.Services.Configure<GeneralSettings>(builder.Configuration.GetSection(GeneralSettings.SectionName));
 
 // 2. Extract values locally to configure JWT during application startup
 var securitySettings = new SecuritySettings();
@@ -45,6 +47,26 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 builder.Services.AddMediatRWithValidation();
 
+#region CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "FrontendPolicy",
+        policy =>
+        {
+            policy.WithOrigins(
+                   "http://localhost:5173",
+                   "https://mazenkhtab321.app.n8n.cloud/webhook-test/5c2de115-1f5c-41ab-a572-be60392aea3f",
+                   "https://mazenkhtab321.app.n8n.cloud/webhook-test",
+                   "https://mazenkhtab321.app.n8n.cloud"
+               )
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+        });
+});
+#endregion
+
 var app = builder.Build();
 
 #region DataSeeding
@@ -53,7 +75,7 @@ try
     using (var scope = app.Services.CreateScope())
     {
         var DbContext = scope.ServiceProvider.GetRequiredService<IAppDbContext>();
-        var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+        var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasherService>();
         var httpContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
 
         await UsersSeeding.SeedingAsync(DbContext, passwordHasher, httpContextAccessor);
@@ -76,6 +98,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -90,5 +114,7 @@ app.UseSwaggerUI(options =>
 });
 
 app.MapControllers();
+
+app.MapHub<AppNotificationHub>("/hubs/notifications");
 
 app.Run();

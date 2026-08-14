@@ -7,9 +7,10 @@ namespace SaaS.Domain.Entities
     public class Job
     {
         public long Id { get; set; }
-        public string Type { get; set; } = string.Empty; // e.g. "ScrapeGroup", "SendDm"
+        public Guid UserId { get; set; }
         public int? BotId { get; set; }
         public int RunId { get; set; }
+        public string Type { get; set; } = string.Empty; // e.g. "ScrapeGroup", "SendDm"
         public string PayloadJson { get; set; } = "{}";
 
         // Status: "Pending", "Processing", "Completed", "Failed"
@@ -18,5 +19,6 @@ namespace SaaS.Domain.Entities
 
         // Navigation Properties
         public Run Run { get; set; } = null!;
+        public User User { get; set; } = null!;
     }
 }

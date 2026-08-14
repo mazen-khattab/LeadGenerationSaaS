@@ -1,4 +1,5 @@
-﻿    using System;
+﻿using SaaS.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,8 +20,9 @@ namespace SaaS.Domain.Entities
         public string? AiMessage { get; set; }
 
         // Status: "Pending", "Completed", "Failed"
-        public string Status { get; set; } = "Pending";
+        public string Status { get; set; } = LeadStatus.PINDING.ToString();
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime ProcessedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
         public User User { get; set; } = null!;

@@ -9,12 +9,12 @@ namespace SaaS.Application.Common.Models
         public bool IsSuccess { get; init; }
         public int? StatusCode { get; init; }
         public string? ErrorMessage { get; init; }
+        public string? Content { get; init; }
 
-        public static NetworkResult Ok(int statusCode) =>
-            new() { IsSuccess = true, StatusCode = statusCode };
+        public static NetworkResult Ok(int statusCode, string? content = null) =>
+            new() { IsSuccess = true, StatusCode = statusCode, Content = content };
 
-        public static NetworkResult Fail(int? statusCode, string errorMessage) =>
-            new() { IsSuccess = false, StatusCode = statusCode, ErrorMessage = errorMessage };
+        public static NetworkResult Fail(int? statusCode, string errorMessage, string? content = null) =>
+            new() { IsSuccess = false, StatusCode = statusCode, ErrorMessage = errorMessage, Content = content };
     }
-
 }

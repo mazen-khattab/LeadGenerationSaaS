@@ -7,6 +7,7 @@ using SaaS.Api.Extensions;
 using SaaS.Application.Features.Runs.Commands.Create;
 using SaaS.Application.Features.Runs.Commands.Complete;
 using SaaS.Api.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SaaS.Api.Controllers.v1
 {
@@ -55,6 +56,7 @@ namespace SaaS.Api.Controllers.v1
         private Guid GetUserId() => Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId) ? userId : Guid.Empty;
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<object>> Create([FromBody] CreateRunDto requestDto)
         {
             var userId = GetUserId();

@@ -18,13 +18,13 @@ namespace SaaS.Application.Features.Auth.Commands.User.Login
     internal class UserLoginCommandHandler : IRequestHandler<UserLoginCommand, ApiResponse<AuthLoginResponseDto>>
     {
         private readonly IAppDbContext _db;
-        private readonly IPasswordHasher _passwordHasher;
+        private readonly IPasswordHasherService _passwordHasher;
         private readonly IAuthSessionService _authSessionService;
         private readonly ILogger<UserLoginCommandHandler> _logger;
 
         public UserLoginCommandHandler(
             IAppDbContext db,            
-            IPasswordHasher passwordHasher,
+            IPasswordHasherService passwordHasher,
             ILogger<UserLoginCommandHandler> logger,
             IAuthSessionService authSessionService)
         {

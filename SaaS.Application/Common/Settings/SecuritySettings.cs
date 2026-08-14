@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SaaS.Application.Common.Settings
 {
-    public class SecuritySettings
+    public sealed class SecuritySettings
     {
         public const string SectionName = "SecuritySettings";
         public string EncryptionKey { get; set; } = string.Empty;

@@ -14,14 +14,16 @@ namespace SaaS.Application.Features.TargetGroups.Commands.Add
     public class AddGroupCommandHandler : IRequestHandler<AddGroupCommand, ApiResponse<Guid>>
     {
         private readonly IAppDbContext _context;
+        private readonly IUserBotService _userBotService;
 
-        public AddGroupCommandHandler(IAppDbContext context) => _context = context;
+        public AddGroupCommandHandler(IAppDbContext context, IUserBotService userBotService) 
+            => (_context, _userBotService) = (context, userBotService);
 
         public async Task<ApiResponse<Guid>> Handle(AddGroupCommand request, CancellationToken cancellationToken)
         {
             var dto = request.GroupDto;
 
-            var hasBot = await _context.UserBots.AnyAsync(ub => ub.UserId == request.UserId && ub.Id == dto.BotId, cancellationToken);
+            var hasBot = await _userBotService.OwnerShipCheck(request.UserId, dto.BotId, cancellationToken);
 
             if (!hasBot)
             {

@@ -1,0 +1,10 @@
+﻿using MediatR;
+using SaaS.Application.Common.Models;
+using System;
+using System.Collections.Generic;
+
+namespace SaaS.Application.Features.Leads.Queries.GetAllLeads
+{
+    public record GetAllLeadsQuery(Guid UserId, int BotId, int PageNumber = 1, int PageSize = 10, string? StatusFilter = null)
+        : IRequest<ApiResponse<PaginatedResult<LeadListDto>>>;
+}

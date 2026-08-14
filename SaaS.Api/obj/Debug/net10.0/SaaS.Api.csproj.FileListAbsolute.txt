@@ -167,3 +167,16 @@ F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\BCrypt-Net-Next.dll
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Data.SqlClient.Extensions.Abstractions.dll
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Data.SqlClient.Internal.Logging.dll
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\obj\Debug\net10.0\SaaS.Api.sourcelink.json
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Extensions.AmbientMetadata.Application.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Extensions.Compliance.Abstractions.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Extensions.DependencyInjection.AutoActivation.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Extensions.Diagnostics.ExceptionSummarization.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Extensions.Http.Diagnostics.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Extensions.Http.Resilience.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Extensions.Resilience.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Extensions.Telemetry.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Microsoft.Extensions.Telemetry.Abstractions.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Polly.Core.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Polly.Extensions.dll
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\bin\Debug\net10.0\Polly.RateLimiting.dll

@@ -15,11 +15,13 @@ namespace SaaS.Application.Features.ConnectedAccounts.Commands.Add
     {
         private readonly IAppDbContext _context;
         private readonly IEncryptionService _encryptionService;
+        private readonly IUserBotService _userBotService;
 
-        public AddConnectedAccountCommandHandler(IAppDbContext context, IEncryptionService encryptionService)
+        public AddConnectedAccountCommandHandler(IAppDbContext context, IEncryptionService encryptionService, IUserBotService userBotService)
         {
             _context = context;
             _encryptionService = encryptionService;
+            _userBotService = userBotService;
         }
 
         public async Task<ApiResponse<Guid>> Handle(AddConnectedAccountCommand request, CancellationToken cancellationToken)
@@ -32,12 +34,7 @@ namespace SaaS.Application.Features.ConnectedAccounts.Commands.Add
                 encrypted = _encryptionService.Encrypt(accountInfo.Cookies);
             }
 
-            var hasBot = await _context.UserBots
-                .AsNoTracking()
-                .AnyAsync(
-                    ub => ub.UserId == request.UserId &&
-                          ub.Id == accountInfo.BotId,
-                    cancellationToken);
+            var hasBot = await _userBotService.OwnerShipCheck(request.UserId, accountInfo.BotId, cancellationToken);
 
             if (!hasBot)
             {

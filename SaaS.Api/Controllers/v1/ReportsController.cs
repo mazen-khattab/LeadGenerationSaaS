@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.OpenApi;
 
 namespace SaaS.Api.Controllers.v1
 {
@@ -14,10 +15,12 @@ namespace SaaS.Api.Controllers.v1
     public class ReportsController : ControllerBase
     {
         private readonly IActionDescriptorCollectionProvider _actionDescriptorCollectionProvider;
+        private readonly ILogger<ReportsController> _logger;
 
-        public ReportsController(IActionDescriptorCollectionProvider actionDescriptorCollectionProvider)
+        public ReportsController(IActionDescriptorCollectionProvider actionDescriptorCollectionProvider, ILogger<ReportsController> logger)
         {
             _actionDescriptorCollectionProvider = actionDescriptorCollectionProvider;
+            _logger = logger;
         }
 
         /// <summary>
@@ -110,6 +113,19 @@ namespace SaaS.Api.Controllers.v1
             return Content(report, "text/plain");
         }
 
+
+        [HttpGet("Entities")]
+        public ActionResult GetEntitiesReport()
+        {
+            var report = GetTypesReport(t =>
+                t.IsClass && !t.IsAbstract && (
+                    (t.Namespace != null && t.Namespace.Contains(".Entities")) ||
+                    t.Name.EndsWith("Entity")),
+                "Entities");
+
+            return Content(report, "text/plain");
+        }
+
         private string GetTypesReport(System.Func<System.Type, bool> predicate, string title)
         {
             var assemblies = System.AppDomain.CurrentDomain.GetAssemblies()
@@ -153,6 +169,15 @@ namespace SaaS.Api.Controllers.v1
                 foreach (var t in g)
                 {
                     sb.AppendLine($"  {t.Name} ({t.FullName})");
+
+                    if (g.Key == "SaaS.Domain.Entities")
+                    {
+                        foreach (var prop in t.GetProperties())
+                        {
+                            sb.AppendLine($"    Property: {prop.Name} ({prop.PropertyType.Name})");
+                        }
+                        sb.AppendLine();
+                    }
                 }
                 sb.AppendLine();
             }
