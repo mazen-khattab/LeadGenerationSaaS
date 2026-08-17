@@ -20,7 +20,7 @@ namespace SaaS.Domain.Entities
         public string? AiMessage { get; set; }
 
         // Status: "Pending", "Completed", "Failed"
-        public string Status { get; set; } = LeadStatus.PINDING.ToString();
+        public string Status { get; set; } = LeadStatus.PENDING.ToString();
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime ProcessedAt { get; set; } = DateTime.UtcNow;
 

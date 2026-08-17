@@ -14,7 +14,7 @@ namespace SaaS.Application.Common.Models
         public static NetworkResult Ok(int statusCode, string? content = null) =>
             new() { IsSuccess = true, StatusCode = statusCode, Content = content };
 
-        public static NetworkResult Fail(int? statusCode, string errorMessage, string? content = null) =>
-            new() { IsSuccess = false, StatusCode = statusCode, ErrorMessage = errorMessage, Content = content };
+        public static NetworkResult Fail(int? statusCode, string errorMessage) =>
+            new() { IsSuccess = false, StatusCode = statusCode, ErrorMessage = errorMessage };
     }
 }

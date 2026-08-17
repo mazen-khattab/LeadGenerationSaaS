@@ -25,15 +25,14 @@ namespace SaaS.Infrastructure.Services
 
         public string GetWebhookUrl(string botCode)
         {
-            if (string.IsNullOrWhiteSpace(botCode))
-                return string.Empty;
+            ArgumentException.ThrowIfNullOrWhiteSpace(botCode, nameof(botCode));
 
-            if (_n8nWebhooks.TryGetValue(botCode, out var url) && !string.IsNullOrWhiteSpace(url))
+            if (!_n8nWebhooks.TryGetValue(botCode, out var url) || string.IsNullOrWhiteSpace(url))
             {
-                return url;
+                throw new KeyNotFoundException($"Webhook URL for bot code '{botCode}' was not found in configuration.");
             }
 
-            return string.Empty;
+            return url;
         }
     }
 }

@@ -8,9 +8,9 @@ F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\SaaS.Applicati
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\SaaS.Application.AssemblyInfoInputs.cache
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\SaaS.Application.AssemblyInfo.cs
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\SaaS.Application.csproj.CoreCompileInputs.cache
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\SaaS.Application.sourcelink.json
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\SaaS.App.D64653CB.Up2Date
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\SaaS.Application.dll
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\refint\SaaS.Application.dll
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\SaaS.Application.pdb
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\ref\SaaS.Application.dll
-F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\obj\Debug\net10.0\SaaS.Application.sourcelink.json

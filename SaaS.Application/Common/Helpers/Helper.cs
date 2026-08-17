@@ -23,7 +23,7 @@ namespace SaaS.Application.Common.Helpers
                     return new string('*', plain.Length);
 
                 // leave last `visible` characters visible, mask the rest using PadLeft
-                return plain.Substring(plain.Length - visible).PadLeft(plain.Length, '*');
+                return plain.Substring(plain.Length - visible).PadLeft(plain.Length > 50 ? 50 : plain.Length, '*');
             }
             catch
             {

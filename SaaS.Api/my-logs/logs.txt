@@ -1087,3 +1087,198 @@ StackTrace:
    at SaaS.Api.Middlewares.SingleActiveSessionMiddleware.InvokeAsync(HttpContext context, ISessionTokenValidator sessionValidator) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\SingleActiveSessionMiddleware.cs:line 71
    at API.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\ExceptionHandlerMiddleware.cs:line 31
 
+--------------------------------------------------
+Timestamp : 2026-08-15T13:10:03.7586224Z
+Status    : 400
+Message   : BotId is required.,A valid connected account Id must be provided.,ConnectedAccountId is required.,InfoJson must be valid JSON.
+Path      : /api/v1/runs
+Method    : POST
+TraceId   : 00-bf8481dae4327100089f6eed22557457-473ae17d87830e71-00
+StackTrace:
+   at SaaS.Application.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Behaviors\ValidationBehavior.cs:line 38
+   at SaaS.Api.Controllers.v1.RunsController.Create(CreateRunDto requestDto) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Controllers\v1\RunsController.cs:line 64
+   at lambda_method371(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at SaaS.Api.Middlewares.SingleActiveSessionMiddleware.InvokeAsync(HttpContext context, ISessionTokenValidator sessionValidator) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\SingleActiveSessionMiddleware.cs:line 71
+   at API.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\ExceptionHandlerMiddleware.cs:line 31
+
+--------------------------------------------------
+Timestamp : 2026-08-15T13:10:19.0090887Z
+Status    : 400
+Message   : InfoJson must be valid JSON.
+Path      : /api/v1/runs
+Method    : POST
+TraceId   : 00-e0a1a403de67127be0a7397dd3f913fc-9b1b1e514be878bf-00
+StackTrace:
+   at SaaS.Application.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Behaviors\ValidationBehavior.cs:line 38
+   at SaaS.Api.Controllers.v1.RunsController.Create(CreateRunDto requestDto) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Controllers\v1\RunsController.cs:line 64
+   at lambda_method371(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at SaaS.Api.Middlewares.SingleActiveSessionMiddleware.InvokeAsync(HttpContext context, ISessionTokenValidator sessionValidator) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\SingleActiveSessionMiddleware.cs:line 71
+   at API.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\ExceptionHandlerMiddleware.cs:line 31
+
+--------------------------------------------------
+Timestamp : 2026-08-15T13:10:41.5585522Z
+Status    : 400
+Message   : InfoJson must be valid JSON.
+Path      : /api/v1/runs
+Method    : POST
+TraceId   : 00-5675ad2567e67d7260b69594e82bdc28-2d52bda716d32236-00
+StackTrace:
+   at SaaS.Application.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Behaviors\ValidationBehavior.cs:line 38
+   at SaaS.Api.Controllers.v1.RunsController.Create(CreateRunDto requestDto) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Controllers\v1\RunsController.cs:line 64
+   at lambda_method371(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at SaaS.Api.Middlewares.SingleActiveSessionMiddleware.InvokeAsync(HttpContext context, ISessionTokenValidator sessionValidator) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\SingleActiveSessionMiddleware.cs:line 71
+   at API.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\ExceptionHandlerMiddleware.cs:line 31
+
+--------------------------------------------------
+Timestamp : 2026-08-15T13:26:12.7291270Z
+Status    : 500
+Message   : An internal server error occurred
+Path      : /api/v1/runs
+Method    : POST
+TraceId   : 00-756ddc4eee4532656747dd490e28262b-e4c42d152c4d028c-00
+StackTrace:
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.<>c__DisplayClass7_0.<<Handle>b__0>d.MoveNext() in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 161
+--- End of stack trace from previous location ---
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.<>c__DisplayClass7_0.<<Handle>b__0>d.MoveNext() in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 174
+--- End of stack trace from previous location ---
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.<>c__DisplayClass7_0.<<Handle>b__0>d.MoveNext() in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 175
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.ExecutionStrategyExtensions.<>c.<<ExecuteAsync>b__3_0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.Handle(CreateRunCommand request, CancellationToken cancellationToken) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 120
+   at SaaS.Application.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Behaviors\ValidationBehavior.cs:line 41
+   at SaaS.Api.Controllers.v1.RunsController.Create(CreateRunDto requestDto) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Controllers\v1\RunsController.cs:line 64
+   at lambda_method371(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at SaaS.Api.Middlewares.SingleActiveSessionMiddleware.InvokeAsync(HttpContext context, ISessionTokenValidator sessionValidator) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\SingleActiveSessionMiddleware.cs:line 71
+   at API.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\ExceptionHandlerMiddleware.cs:line 31
+
+--------------------------------------------------
+Timestamp : 2026-08-15T13:34:02.3926791Z
+Status    : 500
+Message   : An internal server error occurred
+Path      : /api/v1/runs
+Method    : POST
+TraceId   : 00-91d5ed0ebe7216439f9b9559c01936bb-ecb922e972626d5c-00
+StackTrace:
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.<>c__DisplayClass7_0.<<Handle>b__0>d.MoveNext() in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 161
+--- End of stack trace from previous location ---
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.<>c__DisplayClass7_0.<<Handle>b__0>d.MoveNext() in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 174
+--- End of stack trace from previous location ---
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.<>c__DisplayClass7_0.<<Handle>b__0>d.MoveNext() in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 175
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.ExecutionStrategyExtensions.<>c.<<ExecuteAsync>b__3_0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.Handle(CreateRunCommand request, CancellationToken cancellationToken) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 120
+   at SaaS.Application.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Behaviors\ValidationBehavior.cs:line 41
+   at SaaS.Api.Controllers.v1.RunsController.Create(CreateRunDto requestDto) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Controllers\v1\RunsController.cs:line 64
+   at lambda_method371(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at SaaS.Api.Middlewares.SingleActiveSessionMiddleware.InvokeAsync(HttpContext context, ISessionTokenValidator sessionValidator) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\SingleActiveSessionMiddleware.cs:line 71
+   at API.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\ExceptionHandlerMiddleware.cs:line 31
+
+--------------------------------------------------
+Timestamp : 2026-08-15T13:37:09.2893085Z
+Status    : 500
+Message   : An internal server error occurred
+Path      : /api/v1/runs
+Method    : POST
+TraceId   : 00-093fc7794f8d819ad9e9ae0de0a9ca01-ed87d964ad6a0c19-00
+StackTrace:
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.<>c__DisplayClass7_0.<<Handle>b__0>d.MoveNext() in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 161
+--- End of stack trace from previous location ---
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.<>c__DisplayClass7_0.<<Handle>b__0>d.MoveNext() in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 174
+--- End of stack trace from previous location ---
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.<>c__DisplayClass7_0.<<Handle>b__0>d.MoveNext() in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 175
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.ExecutionStrategyExtensions.<>c.<<ExecuteAsync>b__3_0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at SaaS.Application.Features.Runs.Commands.Create.CreateRunCommandHandler.Handle(CreateRunCommand request, CancellationToken cancellationToken) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Features\Runs\Commands\Create\CreateRunCommandHandler.cs:line 120
+   at SaaS.Application.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Application\Behaviors\ValidationBehavior.cs:line 41
+   at SaaS.Api.Controllers.v1.RunsController.Create(CreateRunDto requestDto) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Controllers\v1\RunsController.cs:line 64
+   at lambda_method29(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at SaaS.Api.Middlewares.SingleActiveSessionMiddleware.InvokeAsync(HttpContext context, ISessionTokenValidator sessionValidator) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\SingleActiveSessionMiddleware.cs:line 71
+   at API.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in F:\Mazen\Projects\MultiBotSaaS\SaaS.Api\Middlewares\ExceptionHandlerMiddleware.cs:line 31
+

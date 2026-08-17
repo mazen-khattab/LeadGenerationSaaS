@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,5 +9,6 @@ namespace SaaS.Domain.Enums
         RUNNING,
         PENDING,
         COMPLETED,
+        FAILED
     }
 }

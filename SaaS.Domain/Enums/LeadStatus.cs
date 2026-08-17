@@ -6,7 +6,7 @@ namespace SaaS.Domain.Enums
 {
     public enum LeadStatus
     {
-        PINDING,
+        PENDING,
         COMPLETED,
         FAILED
     }

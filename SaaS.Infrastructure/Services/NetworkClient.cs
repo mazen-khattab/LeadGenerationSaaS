@@ -84,7 +84,7 @@ namespace SaaS.Infrastructure.Services
                     "Request to {Url} returned non-success status {StatusCode}",
                     request.RequestUri, response.StatusCode);
 
-                return NetworkResult.Fail((int)response.StatusCode, $"External system returned status {(int)response.StatusCode}.", body);
+                return NetworkResult.Fail((int)response.StatusCode, body);
             }
             catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
             {

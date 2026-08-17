@@ -72,7 +72,7 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
                 return ApiResponse<DispatchMessagingResultDto>.Failure("One or more leads are invalid or do not belong to the user/bot.", ErrorType.ValidationError);
             }
 
-            if (leads.Any(l => !string.Equals(l.Status, LeadStatus.PINDING.ToString(), StringComparison.OrdinalIgnoreCase)))
+            if (leads.Any(l => !string.Equals(l.Status, LeadStatus.PENDING.ToString(), StringComparison.OrdinalIgnoreCase)))
             {
                 return ApiResponse<DispatchMessagingResultDto>.Failure("One or more leads are not in Pending state.", ErrorType.ValidationError);
             }

@@ -5,8 +5,8 @@ F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\SaaS.Domain.Generat
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\SaaS.Domain.AssemblyInfoInputs.cache
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\SaaS.Domain.AssemblyInfo.cs
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\SaaS.Domain.csproj.CoreCompileInputs.cache
+F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\SaaS.Domain.sourcelink.json
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\SaaS.Domain.dll
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\refint\SaaS.Domain.dll
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\SaaS.Domain.pdb
 F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\ref\SaaS.Domain.dll
-F:\Mazen\Projects\MultiBotSaaS\SaaS.Domain\obj\Debug\net10.0\SaaS.Domain.sourcelink.json
