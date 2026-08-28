@@ -11,11 +11,11 @@ namespace SaaS.Infrastructure.Strategies
 {
     public class N8nRequestStrategy : IExternalSystemRequestStrategy
     {
-        private readonly N8nOptions _options;
+        private readonly IOptionsSnapshot<N8nOptions> _options;
 
-        public N8nRequestStrategy(IOptionsMonitor<N8nOptions> options)
+        public N8nRequestStrategy(IOptionsSnapshot<N8nOptions> options)
         {
-            _options = options.CurrentValue;
+            _options = options;
         }
 
         public ExternalSystem System => ExternalSystem.N8n;
@@ -23,12 +23,12 @@ namespace SaaS.Infrastructure.Strategies
         // n8n webhooks are sometimes passed as a full absolute URL, sometimes as a
         // relative path off the configured base URL - keep supporting both.
         public string ResolveBaseUrl(string endpoint) =>
-            Uri.TryCreate(endpoint, UriKind.Absolute, out _) ? string.Empty : _options.BaseUrl;
+            Uri.TryCreate(endpoint, UriKind.Absolute, out _) ? string.Empty : _options.Value.BaseUrl;
 
         public void ApplyAuthentication(HttpRequestMessage request)
         {
-            if (!string.IsNullOrWhiteSpace(_options.N8nSecret))
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.N8nSecret);
+            if (!string.IsNullOrWhiteSpace(_options.Value.N8nSecret))
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.Value.N8nSecret);
         }
 
     }

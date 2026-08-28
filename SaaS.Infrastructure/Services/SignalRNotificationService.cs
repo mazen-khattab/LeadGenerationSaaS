@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR;
 using SaaS.Application.Common.Interfaces;
 using SaaS.Infrastructure.Hubs;
 using System;
@@ -21,6 +21,26 @@ namespace SaaS.Infrastructure.Services
                 {
                     RunId = runId,
                     LeadsCount = leadsCount
+                });
+        }
+
+        public async Task NotifyLeadStatusUpdatedAsync(Guid userId, long leadId, string status)
+        {
+            await _hubContext.Clients.User(userId.ToString())
+                .SendAsync("LeadStatusUpdated", new
+                {
+                    LeadId = leadId,
+                    Status = status
+                });
+        }
+
+        public async Task NotifyJobFailedAsync(Guid userId, long jobId, string message)
+        {
+            await _hubContext.Clients.User(userId.ToString())
+                .SendAsync("JobFailed", new
+                {
+                    JobId = jobId,
+                    Message = message
                 });
         }
     }

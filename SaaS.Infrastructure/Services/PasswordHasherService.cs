@@ -7,19 +7,19 @@ namespace SaaS.Infrastructure.Services
 {
     public class PasswordHasherService : IPasswordHasherService
     {
-        private readonly int _workFactor;
+        private readonly IOptionsSnapshot<SecuritySettings> _options;
 
-        public PasswordHasherService(IOptionsMonitor<SecuritySettings> securityOptions)
+        public PasswordHasherService(IOptionsSnapshot<SecuritySettings> options)
         {
-            _workFactor = securityOptions.CurrentValue.PasswordWorkFactor;
+            _options = options;
 
-            if (_workFactor is < 11 or > 15)
+            if (options.Value.PasswordWorkFactor is < 11 or > 15)
             {
                 // 10 is roughly the floor for "still meaningfully slow" on modern hardware;
                 // above 15 a single hash starts taking multiple seconds, which turns login
                 // into a usability/DoS problem rather than a security improvement.
                 throw new ArgumentOutOfRangeException(
-                    nameof(securityOptions),
+                    nameof(options),
                     "PasswordWorkFactor must be between 11 and 15.");
             }
         }
@@ -32,7 +32,7 @@ namespace SaaS.Infrastructure.Services
             // BCrypt generates a secure, random salt per password and embeds both the
             // salt and the work factor into the returned hash string - nothing extra
             // needs to be stored alongside it.
-            return BCrypt.Net.BCrypt.EnhancedHashPassword(password, _workFactor);
+            return BCrypt.Net.BCrypt.EnhancedHashPassword(password, _options.Value.PasswordWorkFactor);
         }
 
         public bool VerifyPassword(string password, string passwordHash)
@@ -62,7 +62,7 @@ namespace SaaS.Infrastructure.Services
             // needed when you raise the work factor later.
             try
             {
-                return BCrypt.Net.BCrypt.PasswordNeedsRehash(passwordHash, _workFactor);
+                return BCrypt.Net.BCrypt.PasswordNeedsRehash(passwordHash, _options.Value.PasswordWorkFactor);
             }
             catch (SaltParseException)
             {

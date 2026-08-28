@@ -20,7 +20,7 @@ namespace SaaS.Infrastructure.Services
     /// </summary>
     public class TokenService : ITokenService
     {
-        private readonly SecuritySettings _securitySettings;
+        private readonly IOptionsSnapshot<SecuritySettings> _securitySettings;
         private readonly ILogger<TokenService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IHostEnvironment _env;
@@ -28,24 +28,24 @@ namespace SaaS.Infrastructure.Services
         public const string AccessTokenCookieName = "X-Access-Token";
         public const string RefreshTokenCookieName = "X-Refresh-Token";
 
-        public TokenService(IOptionsMonitor<SecuritySettings> securityOptions, ILogger<TokenService> logger, IHttpContextAccessor httpContextAccessor, IHostEnvironment environment)
+        public TokenService(IOptionsSnapshot<SecuritySettings> securityOptions, ILogger<TokenService> logger, IHttpContextAccessor httpContextAccessor, IHostEnvironment environment)
         {
-            _securitySettings = securityOptions.CurrentValue;
+            _securitySettings = securityOptions;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _env = environment;
 
-            if (string.IsNullOrWhiteSpace(_securitySettings.JwtSecret))
+            if (string.IsNullOrWhiteSpace(securityOptions.Value.JwtSecret))
                 throw new ArgumentException("JwtSecret cannot be empty.", nameof(securityOptions));
 
-            if (string.IsNullOrWhiteSpace(_securitySettings.JwtIssuer))
+            if (string.IsNullOrWhiteSpace(securityOptions.Value.JwtIssuer))
                 throw new ArgumentException("JwtIssuer cannot be empty.", nameof(securityOptions));
 
-            if (string.IsNullOrWhiteSpace(_securitySettings.JwtAudience))
+            if (string.IsNullOrWhiteSpace(securityOptions.Value.JwtAudience))
                 throw new ArgumentException("JwtAudience cannot be empty.", nameof(securityOptions));
 
             // Validate that JwtSecret is at least 256 bits (32 bytes) for HMAC-SHA256
-            if (Encoding.UTF8.GetBytes(_securitySettings.JwtSecret).Length < 32)
+            if (Encoding.UTF8.GetBytes(securityOptions.Value.JwtSecret).Length < 32)
                 throw new ArgumentException(
                     "JwtSecret must be at least 256 bits (32 bytes) for HMAC-SHA256 security.",
                     nameof(securityOptions));
@@ -105,7 +105,7 @@ namespace SaaS.Infrastructure.Services
             var refreshToken = new UserRefreshToken
             {
                 Token = token,
-                ExpDate = utcNow.AddDays(_securitySettings.RefreshTokenExpirationDays),
+                ExpDate = utcNow.AddDays(_securitySettings.Value.RefreshTokenExpirationDays),
                 CreatedAt = utcNow,
             };
 
@@ -157,15 +157,15 @@ namespace SaaS.Infrastructure.Services
 
         private string BuildJwtToken(IEnumerable<Claim> claims)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securitySettings.JwtSecret));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securitySettings.Value.JwtSecret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(_securitySettings.AccessTokenExpirationMinutes),
-                Issuer = _securitySettings.JwtIssuer,
-                Audience = _securitySettings.JwtAudience,
+                Expires = DateTime.UtcNow.AddMinutes(_securitySettings.Value.AccessTokenExpirationMinutes),
+                Issuer = _securitySettings.Value.JwtIssuer,
+                Audience = _securitySettings.Value.JwtAudience,
                 SigningCredentials = creds
             };
 

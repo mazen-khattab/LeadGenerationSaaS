@@ -6,5 +6,5 @@ using SaaS.Application.Common.Models;
 
 namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
 {
-    public record DispatchMessagingJobCommand(Guid UserId, int BotId, List<long> LeadIds) : IRequest<ApiResponse<DispatchMessagingResultDto>>;
+    public record DispatchMessagingJobCommand(Guid UserId, int BotId, int AccountId, List<long> LeadIds) : IRequest<ApiResponse<DispatchMessagingResultDto>>;
 }

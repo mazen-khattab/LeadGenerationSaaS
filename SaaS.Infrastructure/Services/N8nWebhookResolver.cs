@@ -12,22 +12,23 @@ namespace SaaS.Infrastructure.Services
     /// </summary>
     public class N8nWebhookResolver : IN8nWebhookResolver
     {
-        private readonly Dictionary<string, string> _n8nWebhooks;
+        private readonly IOptionsMonitor<Dictionary<string, string>> _options;
 
         public N8nWebhookResolver(IOptionsMonitor<Dictionary<string, string>> options)
         {
-            _n8nWebhooks = new Dictionary<string, string>
-                (
-                    options.CurrentValue ?? [],
-                    StringComparer.OrdinalIgnoreCase
-                );
+            _options = options;
         }
 
         public string GetWebhookUrl(string botCode)
         {
+            Dictionary<string, string> n8nWebhooks = new(
+                    _options.CurrentValue ?? [],
+                    StringComparer.OrdinalIgnoreCase
+                );
+
             ArgumentException.ThrowIfNullOrWhiteSpace(botCode, nameof(botCode));
 
-            if (!_n8nWebhooks.TryGetValue(botCode, out var url) || string.IsNullOrWhiteSpace(url))
+            if (!n8nWebhooks.TryGetValue(botCode, out var url) || string.IsNullOrWhiteSpace(url))
             {
                 throw new KeyNotFoundException($"Webhook URL for bot code '{botCode}' was not found in configuration.");
             }

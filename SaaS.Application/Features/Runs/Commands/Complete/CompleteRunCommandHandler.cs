@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,6 +5,7 @@ using SaaS.Application.Common.Interfaces;
 using SaaS.Application.Common.Models;
 using SaaS.Domain.Entities;
 using SaaS.Domain.Enums;
+using SaaS.Domain.Extensions;
 
 namespace SaaS.Application.Features.Runs.Commands.Complete
 {
@@ -44,9 +39,9 @@ namespace SaaS.Application.Features.Runs.Commands.Complete
                 return ApiResponse<bool>.Failure("Run not found.", ErrorType.NotFound);
             }
 
-            if (!string.Equals(run.Status, RunStatus.RUNNING.ToString(), StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(run.Status, RunStatus.RUNNING.ToDbString(), StringComparison.OrdinalIgnoreCase))
             {
-                _logger.LogWarning("Cannot complete RunId {RunId}. Current status is '{Status}', expected '{ExpectedStatus}'", run.Id, run.Status, RunStatus.RUNNING.ToString());
+                _logger.LogWarning("Cannot complete RunId {RunId}. Current status is '{Status}', expected '{ExpectedStatus}'", run.Id, run.Status, RunStatus.RUNNING.ToDbString());
                 return ApiResponse<bool>.Failure("Run is not in progress or has already been finalized.", ErrorType.ValidationError);
             }
 
@@ -87,7 +82,7 @@ namespace SaaS.Application.Features.Runs.Commands.Complete
                         ProfileName = dto.Username ?? string.Empty,
                         ProfileUrl = dto.ExternalId!,
                         AiMessage = dto.AiMessage ?? string.Empty,
-                        Status = LeadStatus.PENDING.ToString(),
+                        Status = LeadStatus.PENDING.ToDbString(),
                         CreatedAt = DateTime.UtcNow,
                         Detail = new LeadDetail { MetaDataJson = string.IsNullOrWhiteSpace(dto.MetadataJson) ? "{}" : dto.MetadataJson }
                     }).ToList();
@@ -114,7 +109,7 @@ namespace SaaS.Application.Features.Runs.Commands.Complete
 
             // Single Path: Finalize run
             _logger.LogDebug("Updating run status to COMPLETED and saving changes for RunId: {RunId}", run.Id);
-            run.Status = RunStatus.COMPLETED.ToString();
+            run.Status = RunStatus.COMPLETED.ToDbString();
             run.CollectedLeadsCount = newLeads.Count;
             run.EndedAt = DateTime.UtcNow;
 

@@ -10,11 +10,11 @@ namespace SaaS.Api.Filters
     public class N8nWebhookAuthorizeFilter : IAuthorizationFilter
     {
         private const string HeaderName = "X-Webhook-Secret";
-        private readonly N8nOptions _options;
+        private readonly IOptionsSnapshot<N8nOptions> _options;
 
-        public N8nWebhookAuthorizeFilter(IOptionsMonitor<N8nOptions> options)
+        public N8nWebhookAuthorizeFilter(IOptionsSnapshot<N8nOptions> options)
         {
-            _options = options.CurrentValue;
+            _options = options;
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -32,7 +32,7 @@ namespace SaaS.Api.Filters
                 return;
             }
 
-            var n8nSecret = _options.N8nSecret;
+            var n8nSecret = _options.Value.N8nSecret;
 
             // 2. Check if secret is configured on the server
             if (string.IsNullOrWhiteSpace(n8nSecret))

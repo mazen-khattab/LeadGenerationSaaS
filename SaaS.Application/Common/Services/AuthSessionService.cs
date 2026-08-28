@@ -16,18 +16,18 @@ namespace SaaS.Application.Common.Services
     {
         private readonly IAppDbContext _db;
         private readonly ITokenService _tokenService;
-        private readonly SecuritySettings _securitySettings;
+        private readonly IOptionsSnapshot<SecuritySettings> _options;
         private readonly ILogger<AuthSessionService> _logger;
 
         public AuthSessionService(
             IAppDbContext db,
             ITokenService tokenService,
-            IOptionsMonitor<SecuritySettings> securityOptions,
+            IOptionsSnapshot<SecuritySettings> options,
             ILogger<AuthSessionService> logger)
         {
             _db = db;
             _tokenService = tokenService;
-            _securitySettings = securityOptions?.CurrentValue ?? throw new ArgumentNullException(nameof(securityOptions));
+            _options = options;
             _logger = logger;
         }
 
@@ -43,7 +43,7 @@ namespace SaaS.Application.Common.Services
                 UserId = userId,
                 Token = refreshTokenValue,
                 CreatedAt = utcNow,
-                ExpDate = utcNow.AddDays(_securitySettings.RefreshTokenExpirationDays),
+                ExpDate = utcNow.AddDays(_options.Value.RefreshTokenExpirationDays),
                 IsActive = true
             };
 
@@ -136,7 +136,7 @@ namespace SaaS.Application.Common.Services
                 AdminId = adminId,
                 Token = refreshTokenValue,
                 CreatedAt = utcNow,
-                ExpDate = utcNow.AddDays(_securitySettings.RefreshTokenExpirationDays),
+                ExpDate = utcNow.AddDays(_options.Value.RefreshTokenExpirationDays),
                 IsActive = true
             };
 

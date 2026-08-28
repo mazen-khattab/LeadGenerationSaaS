@@ -3,23 +3,28 @@
   "WorkspaceRootPath": "F:\\Mazen\\Projects\\MultiBotSaaS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\runs\\commands\\create\\createruncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\runs\\commands\\create\\createruncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|f:\\mazen\\projects\\multibotsaas\\saas.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|solutionrelative:saas.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|f:\\mazen\\projects\\multibotsaas\\saas.api\\controllers\\v1\\runscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|solutionrelative:saas.api\\controllers\\v1\\runscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|f:\\mazen\\projects\\multibotsaas\\saas.api\\controllers\\v1\\workercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DD6BFBD-CE91-3649-3D97-2A94BBD148DA}|SaaS.Api\\SaaS.Api.csproj|solutionrelative:saas.api\\controllers\\v1\\workercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mazen\\AppData\\Roaming\\Microsoft\\UserSecrets\\a479a8bb-7644-4cd5-b9ab-00a287ce7dca\\secrets.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|f:\\mazen\\projects\\multibotsaas\\saas.infrastructure\\services\\jobtimeoutwatchdogservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|solutionrelative:saas.infrastructure\\services\\jobtimeoutwatchdogservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|f:\\mazen\\projects\\multibotsaas\\saas.infrastructure\\services\\networkclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|solutionrelative:saas.infrastructure\\services\\networkclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A9DA5015-9285-4287-353D-CECE7FD07B76}|SaaS.Domain\\SaaS.Domain.csproj|f:\\mazen\\projects\\multibotsaas\\saas.domain\\entities\\job.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9DA5015-9285-4287-353D-CECE7FD07B76}|SaaS.Domain\\SaaS.Domain.csproj|solutionrelative:saas.domain\\entities\\job.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|f:\\mazen\\projects\\multibotsaas\\saas.infrastructure\\extensions\\servicecollectionextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B6EB986F-3A3D-0246-0758-2D8B88A09F27}|SaaS.Infrastructure\\SaaS.Infrastructure.csproj|solutionrelative:saas.infrastructure\\extensions\\servicecollectionextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\worker\\commands\\dispatchmessaging\\dispatchmessagingjobcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\worker\\commands\\dispatchmessaging\\dispatchmessagingjobcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|f:\\mazen\\projects\\multibotsaas\\saas.application\\features\\worker\\commands\\logbotactivity\\logbotactivitycommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7407282F-F3B1-F209-56E4-4701A0417771}|SaaS.Application\\SaaS.Application.csproj|solutionrelative:saas.application\\features\\worker\\commands\\logbotactivity\\logbotactivitycommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -29,70 +34,87 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "secrets.json",
-              "DocumentMoniker": "C:\\Users\\mazen\\AppData\\Roaming\\Microsoft\\UserSecrets\\a479a8bb-7644-4cd5-b9ab-00a287ce7dca\\secrets.json",
-              "ToolTip": "C:\\Users\\mazen\\AppData\\Roaming\\Microsoft\\UserSecrets\\a479a8bb-7644-4cd5-b9ab-00a287ce7dca\\secrets.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-08-14T12:06:49.653Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "RunsController.cs",
-              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\RunsController.cs",
-              "RelativeDocumentMoniker": "SaaS.Api\\Controllers\\v1\\RunsController.cs",
-              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\RunsController.cs",
-              "RelativeToolTip": "SaaS.Api\\Controllers\\v1\\RunsController.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAgwCoAAAA0AAAAAAAAAA==",
+              "Title": "WorkerController.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\WorkerController.cs",
+              "RelativeDocumentMoniker": "SaaS.Api\\Controllers\\v1\\WorkerController.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Controllers\\v1\\WorkerController.cs",
+              "RelativeToolTip": "SaaS.Api\\Controllers\\v1\\WorkerController.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAAADAAAABiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-14T12:02:22.47Z",
+              "WhenOpened": "2026-08-22T20:06:47.789Z",
+              "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CreateRunCommandHandler.cs",
-              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Runs\\Commands\\Create\\CreateRunCommandHandler.cs",
-              "RelativeDocumentMoniker": "SaaS.Application\\Features\\Runs\\Commands\\Create\\CreateRunCommandHandler.cs",
-              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Runs\\Commands\\Create\\CreateRunCommandHandler.cs",
-              "RelativeToolTip": "SaaS.Application\\Features\\Runs\\Commands\\Create\\CreateRunCommandHandler.cs",
-              "ViewState": "AgIAAEwAAAAAAAAAAAAYwFcAAABEAAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Program.cs",
+              "RelativeDocumentMoniker": "SaaS.Api\\Program.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Api\\Program.cs",
+              "RelativeToolTip": "SaaS.Api\\Program.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAAAGwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-14T11:53:54.992Z",
+              "WhenOpened": "2026-08-26T18:41:16.322Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "JobTimeoutWatchdogService.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\JobTimeoutWatchdogService.cs",
+              "RelativeDocumentMoniker": "SaaS.Infrastructure\\Services\\JobTimeoutWatchdogService.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\JobTimeoutWatchdogService.cs",
+              "RelativeToolTip": "SaaS.Infrastructure\\Services\\JobTimeoutWatchdogService.cs",
+              "ViewState": "AgIAAIkAAAAAAAAAAAAIwJMAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-22T23:10:27.732Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "NetworkClient.cs",
-              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\NetworkClient.cs",
-              "RelativeDocumentMoniker": "SaaS.Infrastructure\\Services\\NetworkClient.cs",
-              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Services\\NetworkClient.cs",
-              "RelativeToolTip": "SaaS.Infrastructure\\Services\\NetworkClient.cs",
-              "ViewState": "AgIAACQAAAAAAAAAAAAowDYAAAAJAAAAAAAAAA==",
+              "Title": "Job.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Domain\\Entities\\Job.cs",
+              "RelativeDocumentMoniker": "SaaS.Domain\\Entities\\Job.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Domain\\Entities\\Job.cs",
+              "RelativeToolTip": "SaaS.Domain\\Entities\\Job.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-14T09:52:08.949Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-22T23:06:11.24Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "ServiceCollectionExtensions.cs",
-              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
-              "RelativeDocumentMoniker": "SaaS.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
-              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
-              "RelativeToolTip": "SaaS.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAQwCkAAAA6AAAAAAAAAA==",
+              "Title": "DispatchMessagingJobCommandHandler.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Worker\\Commands\\DispatchMessaging\\DispatchMessagingJobCommandHandler.cs",
+              "RelativeDocumentMoniker": "SaaS.Application\\Features\\Worker\\Commands\\DispatchMessaging\\DispatchMessagingJobCommandHandler.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Worker\\Commands\\DispatchMessaging\\DispatchMessagingJobCommandHandler.cs",
+              "RelativeToolTip": "SaaS.Application\\Features\\Worker\\Commands\\DispatchMessaging\\DispatchMessagingJobCommandHandler.cs",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAowIwAAABXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-14T09:38:52.555Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-22T22:47:12.792Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "LogBotActivityCommandHandler.cs",
+              "DocumentMoniker": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Worker\\Commands\\LogBotActivity\\LogBotActivityCommandHandler.cs",
+              "RelativeDocumentMoniker": "SaaS.Application\\Features\\Worker\\Commands\\LogBotActivity\\LogBotActivityCommandHandler.cs",
+              "ToolTip": "F:\\Mazen\\Projects\\MultiBotSaaS\\SaaS.Application\\Features\\Worker\\Commands\\LogBotActivity\\LogBotActivityCommandHandler.cs",
+              "RelativeToolTip": "SaaS.Application\\Features\\Worker\\Commands\\LogBotActivity\\LogBotActivityCommandHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-22T22:44:24.806Z"
             }
           ]
         }

@@ -10,22 +10,18 @@ namespace SaaS.Infrastructure.Services
 {
     public class EncryptionService : IEncryptionService
     {
-        private readonly byte[] _key;
+        private readonly IOptionsMonitor<SecuritySettings> _options;
+
         public EncryptionService(IOptionsMonitor<SecuritySettings> options)
         {
-            var encryptionKey = options.CurrentValue.EncryptionKey;
-
-            if (string.IsNullOrEmpty(encryptionKey))
-            {
-                throw new ArgumentException(nameof(encryptionKey), "EncryptionKey is missing in SecuritySettings configuration.");
-            }
-
-            _key = SHA256.HashData(Encoding.UTF8.GetBytes(encryptionKey));
+            _options = options;
         }
 
         public string Encrypt(string plainText)
         {
             if (string.IsNullOrEmpty(plainText)) return plainText;
+
+            var key = GetKey();
 
             var nonce = new byte[AesGcm.NonceByteSizes.MaxSize]; // 12 Bytes (IV)
             var tag = new byte[AesGcm.TagByteSizes.MaxSize];     // 16 Bytes (Authentication Tag)
@@ -34,7 +30,7 @@ namespace SaaS.Infrastructure.Services
 
             RandomNumberGenerator.Fill(nonce);
 
-            using var aesGcm = new AesGcm(_key, tag.Length);
+            using var aesGcm = new AesGcm(key, tag.Length);
             aesGcm.Encrypt(nonce, plainBytes, cipherBytes, tag);
 
             var result = new byte[nonce.Length + tag.Length + cipherBytes.Length];
@@ -49,6 +45,8 @@ namespace SaaS.Infrastructure.Services
         public string Decrypt(string cipherText)
         {
             if (string.IsNullOrEmpty(cipherText)) return cipherText;
+
+            var key = GetKey();
 
             try
             {
@@ -67,7 +65,7 @@ namespace SaaS.Infrastructure.Services
                 var cipherBytes = fullCipher.AsSpan(nonceSize + tagSize, cipherSize);
                 var plainBytes = new byte[cipherSize];
 
-                using var aesGcm = new AesGcm(_key, tagSize);
+                using var aesGcm = new AesGcm(key, tagSize);
 
                 aesGcm.Decrypt(nonce, cipherBytes, tag, plainBytes);
 
@@ -77,6 +75,18 @@ namespace SaaS.Infrastructure.Services
             {
                 throw new InvalidOperationException("Failure to decrypt sensitive data. Data may have been tampered with or key is invalid.", ex);
             }
+        }
+
+        private byte[] GetKey()
+        {
+            var encriptionKey = _options.CurrentValue.EncryptionKey;
+
+            if (string.IsNullOrEmpty(encriptionKey))
+            {
+                throw new ArgumentException(nameof(_options.CurrentValue.EncryptionKey), "EncryptionKey is missing in SecuritySettings configuration.");
+            }
+
+            return SHA256.HashData(Encoding.UTF8.GetBytes(encriptionKey));
         }
     }
 }
