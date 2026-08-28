@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using SaaS.Domain.Enums;
+using SaaS.Domain.Extensions;
 
 namespace SaaS.Domain.Entities
 {
@@ -12,6 +14,9 @@ namespace SaaS.Domain.Entities
         public string DisplayName { get; set; } = string.Empty;
         public string Platform { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
+        
+        // Status: "Active", "Busy", "CoolingDown", "AccountFlagged", "Banned"
+        public string Status { get; set; } = AccountStatus.ACTIVE.ToDbString();
 
         // Navigation Properties
         public ConnectedAccountCookie Cookie { get; set; } = null!;

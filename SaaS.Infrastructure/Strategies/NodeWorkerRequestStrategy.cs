@@ -10,21 +10,21 @@ namespace SaaS.Infrastructure.Strategies
 {
     public class NodeWorkerRequestStrategy : IExternalSystemRequestStrategy
     {
-        private readonly WorkerOptions _options;
+        private readonly IOptionsSnapshot<WorkerOptions> _options;
 
-        public NodeWorkerRequestStrategy(IOptionsMonitor<WorkerOptions> options)
+        public NodeWorkerRequestStrategy(IOptionsSnapshot<WorkerOptions> options)
         {
-            _options = options.CurrentValue;
+            _options = options;
         }
 
         public ExternalSystem System => ExternalSystem.NodeWorker;
 
-        public string ResolveBaseUrl(string endpoint) => _options.BaseUrl;
+        public string ResolveBaseUrl(string endpoint) => _options.Value.BaseUrl;
 
         public void ApplyAuthentication(HttpRequestMessage request)
         {
-            if (!string.IsNullOrWhiteSpace(_options.WorkerSecret))
-                request.Headers.Add("X-Worker-Api-Key", _options.WorkerSecret);
+            if (!string.IsNullOrWhiteSpace(_options.Value.WorkerSecret))
+                request.Headers.Add("X-Worker-Api-Key", _options.Value.WorkerSecret);
         }
 
     }

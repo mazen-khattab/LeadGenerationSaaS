@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
@@ -10,17 +10,18 @@ namespace SaaS.Api.Filters
 {
     public class BotWorkerAuthorizeFilter : IAsyncAuthorizationFilter
     {
-        private const string HeaderName = "x-bot-worker-api-key";
-        private readonly WorkerOptions _workder;
+        private const string HeaderName = "x-worker-api-key";
+        private readonly IOptionsSnapshot<WorkerOptions> _options;
 
-        public BotWorkerAuthorizeFilter(IOptionsMonitor<WorkerOptions> options)
+        public BotWorkerAuthorizeFilter(IOptionsSnapshot<WorkerOptions> options)
         {
-            _workder = options.CurrentValue;
+            _options = options;
         }
 
         public Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var headers = context.HttpContext.Request.Headers;
+            var workerOptions = _options.Value;
 
             if (!headers.TryGetValue(HeaderName, out var provided) || string.IsNullOrEmpty(provided))
             {
@@ -32,7 +33,7 @@ namespace SaaS.Api.Filters
                 return Task.CompletedTask;
             }
 
-            var workerSecret = _workder.WorkerSecret;
+            var workerSecret = workerOptions.WorkerSecret;
 
             if (string.IsNullOrWhiteSpace(workerSecret))
             {

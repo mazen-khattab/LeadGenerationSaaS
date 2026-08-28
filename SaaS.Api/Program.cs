@@ -7,6 +7,7 @@ using SaaS.Application.Common.Interfaces;
 using SaaS.Application.Common.Settings;
 using SaaS.Application.Features.Users.Queries.GetUserById;
 using SaaS.Domain.Entities;
+using SaaS.Infrastructure;
 using SaaS.Infrastructure.DataSeeding;
 using SaaS.Infrastructure.Extensions;
 using SaaS.Infrastructure.Hubs;
@@ -31,6 +32,7 @@ builder.Services.Configure<N8nOptions>(builder.Configuration.GetSection(N8nOptio
 builder.Services.Configure<WorkerOptions>(builder.Configuration.GetSection(WorkerOptions.SectionName));
 builder.Services.Configure<Dictionary<string, string>>(builder.Configuration.GetSection("N8nWebhooks"));
 builder.Services.Configure<GeneralSettings>(builder.Configuration.GetSection(GeneralSettings.SectionName));
+builder.Services.Configure<JobWatchdogOptions>(builder.Configuration.GetSection(JobWatchdogOptions.SectionName));
 
 // 2. Extract values locally to configure JWT during application startup
 var securitySettings = new SecuritySettings();

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SaaS.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+58bd420e498a2a3aec7bad2afd030b59768f2309")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1a7b601eba0e398e0d9cd1dcbb5fc55d1ec04541")]
 [assembly: System.Reflection.AssemblyProductAttribute("SaaS.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SaaS.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

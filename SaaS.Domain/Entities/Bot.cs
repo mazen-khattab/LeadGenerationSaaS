@@ -12,8 +12,8 @@ namespace SaaS.Domain.Entities
         public decimal CurrentPrice { get; set; }
         public string UiModuleCode { get; set; } = string.Empty;
 
-        // Anti-Spam & Rate Limiting (Default 5 Hours = 300 Mins)
-        public int CooldownMinutes { get; set; } = 300;
+        // Anti-Spam & Rate Limiting (Default 3 Hours = 180 Mins)
+        public int CooldownMinutes { get; set; } = 180;
         public bool IsActive { get; set; } = true;
 
         // Navigation Properties

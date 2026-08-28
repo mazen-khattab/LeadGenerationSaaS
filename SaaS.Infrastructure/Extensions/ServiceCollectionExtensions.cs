@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
 using Polly;
@@ -27,6 +27,7 @@ namespace SaaS.Infrastructure.Extensions
                 provider.GetRequiredService<AppDbContext>());
 
             services.AddSingleton<IEncryptionService, EncryptionService>();
+
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ISessionTokenValidator, SessionTokenValidator>();
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
@@ -62,12 +63,17 @@ namespace SaaS.Infrastructure.Extensions
                 });
             });
 
-
             // SingalR services
             services.AddSignalR();
             services.AddTransient<IAppNotificationService, SignalRNotificationService>();
 
             services.AddSingleton<IN8nWebhookResolver, N8nWebhookResolver>();
+
+            // Register background hosted services
+            services.AddHostedService<JobTimeoutWatchdogService>();
+
+            services.AddSingleton<IJobStalenessStrategy, MessagingJobStalenessStrategy>();
+
             return services;
         }
     }

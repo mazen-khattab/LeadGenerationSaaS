@@ -10,6 +10,7 @@ using SaaS.Domain.Entities;
 using MediatR;
 using SaaS.Domain.Enums;
 using Microsoft.Extensions.Logging;
+using SaaS.Domain.Extensions;
 
 namespace SaaS.Application.Features.Runs.Commands.Create
 {
@@ -131,7 +132,7 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                 AccountId = connectedAccountId,
                 InfoJson = request.CreateRunDto.InfoJson,
                 StartedAt = DateTime.UtcNow,
-                Status = RunStatus.RUNNING.ToString()
+                Status = RunStatus.RUNNING.ToDbString()
             };
 
             if (targetGroupId > 0)
@@ -178,7 +179,7 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                 _logger.LogError(ex, "Failed to dispatch run to external system. RunId: {RunId}", run.Id);
                 
                 // 3. Compensation: Mark as failed if dispatch fails
-                run.Status = RunStatus.FAILED.ToString();
+                run.Status = RunStatus.FAILED.ToDbString();
                 await _context.SaveChangesAsync(cancellationToken);
                 
                 return ApiResponse<int>.Failure("Failed to dispatch run to external system.", ErrorType.ServerError);
