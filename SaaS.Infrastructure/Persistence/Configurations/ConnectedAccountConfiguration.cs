@@ -54,5 +54,8 @@ public class ConnectedAccountConfiguration : IEntityTypeConfiguration<ConnectedA
         // would not satisfy the BotId filter without an extra key lookup.
         builder.HasIndex(ca => new { ca.UserId, ca.BotId })
             .HasDatabaseName("IX_ConnectedAccounts_UserId_BotId");
+
+        builder.HasIndex(ca => new { ca.UserId, ca.Status })
+            .HasDatabaseName("IX_ConnectedAccounts_UserId_Status");
     }
 }

@@ -40,6 +40,28 @@ namespace SaaS.Application.Features.Worker.Commands.UpdateJobStatus
             if (Enum.TryParse<JobStatus>(request.Status, true, out var jobStatusEnum))
             {
                 job.Status = jobStatusEnum.ToDbString();
+
+                if (jobStatusEnum == JobStatus.COMPLETED || jobStatusEnum == JobStatus.FAILED)
+                {
+                    try 
+                    {
+                        var payload = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.Dictionary<string, object>>(job.PayloadJson);
+                        if (payload != null && payload.TryGetValue("accountId", out var accountIdObj) && int.TryParse(accountIdObj.ToString(), out int accountId))
+                        {
+                            var account = await _context.ConnectedAccounts.FirstOrDefaultAsync(a => a.Id == accountId, cancellationToken);
+                            if (account != null && account.Status == AccountStatus.BUSY.ToDbString())
+                            {
+                                account.Status = jobStatusEnum == JobStatus.COMPLETED 
+                                    ? AccountStatus.COOLING_DOWN.ToDbString() 
+                                    : AccountStatus.ACTIVE.ToDbString();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to update ConnectedAccount status for Job {JobId}", job.Id);
+                    }
+                }
             }
             else
             {

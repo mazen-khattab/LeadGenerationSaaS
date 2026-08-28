@@ -63,21 +63,20 @@ namespace SaaS.Application.Features.Runs.Commands.Create
             _logger.LogDebug("Loading connected account. ConnectedAccountId: {ConnectedAccountId}", connectedAccountId);
             // Fetch connected account with its cookie and bot
             var account = await _context.ConnectedAccounts
-                .AsNoTracking()
-                .Select(a => new {
-                    a.Id, 
-                    a.BotId,
-                    a.UserId,
-                    a.Cookie.EncryptedCookies, 
-                    a.Cookie.CookiesExpireDate,
-                    a.Bot.UiModuleCode,
-                })
+                .Include(a => a.Cookie)
+                .Include(a => a.Bot)
                 .FirstOrDefaultAsync(a => a.Id == connectedAccountId && a.UserId == userId, cancellationToken);
 
             if (account is null)
             {
                 _logger.LogWarning("Connected account was not found. ConnectedAccountId: {ConnectedAccountId}", connectedAccountId);
                 return ApiResponse<int>.Failure("Connected account not found.", ErrorType.NotFound);
+            }
+
+            if (!string.Equals(account.Status, AccountStatus.ACTIVE.ToDbString(), StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.LogWarning("Account {AccountId} is not active. Current status: {Status}", connectedAccountId, account.Status);
+                return ApiResponse<int>.Failure($"Account is currently {account.Status} and cannot be used.", ErrorType.ValidationError);
             }
 
             _logger.LogDebug("Loading target group. TargetGroupId: {TargetGroupId}", targetGroupId);
@@ -113,11 +112,11 @@ namespace SaaS.Application.Features.Runs.Commands.Create
 
             _logger.LogDebug("Decrypting cookies for connected account. ConnectedAccountId: {ConnectedAccountId}", connectedAccountId);
             // Decrypt cookies
-            var encrypted = account?.EncryptedCookies ?? string.Empty;
+            var encrypted = account.Cookie?.EncryptedCookies ?? string.Empty;
             var decryptedCookies = _encryptionService.Decrypt(encrypted);
 
             // Check expiry using stored expire date
-            var expireDate = account?.CookiesExpireDate ?? DateTime.MinValue;
+            var expireDate = account.Cookie?.CookiesExpireDate ?? DateTime.MinValue;
             if (expireDate <= DateTime.UtcNow)
             {
                 _logger.LogWarning("Cookies have expired. ConnectedAccountId: {ConnectedAccountId}, ExpireDate: {ExpireDate}", connectedAccountId, expireDate);
@@ -138,6 +137,9 @@ namespace SaaS.Application.Features.Runs.Commands.Create
             if (targetGroupId > 0)
                 run.GroupId = targetGroupId;
 
+            // Set Account Status to BUSY
+            account.Status = AccountStatus.BUSY.ToDbString();
+
             // 1. Save Run to DB (Without holding transaction open during HTTP call)
             await _context.Runs.AddAsync(run, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
@@ -147,7 +149,7 @@ namespace SaaS.Application.Features.Runs.Commands.Create
             try
             {
                 // Resolve webhook URL
-                var botCode = account?.UiModuleCode ?? string.Empty;
+                var botCode = account.Bot?.UiModuleCode ?? string.Empty;
                 var webhookUrl = _webhookResolver.GetWebhookUrl(botCode);
 
                 // Build payload
@@ -180,6 +182,7 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                 
                 // 3. Compensation: Mark as failed if dispatch fails
                 run.Status = RunStatus.FAILED.ToDbString();
+                account.Status = AccountStatus.ACTIVE.ToDbString();
                 await _context.SaveChangesAsync(cancellationToken);
                 
                 return ApiResponse<int>.Failure("Failed to dispatch run to external system.", ErrorType.ServerError);

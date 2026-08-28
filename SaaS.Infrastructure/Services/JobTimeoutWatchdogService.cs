@@ -225,6 +225,23 @@ namespace SaaS.Infrastructure.Services
         {
             job.Status = JobStatus.FAILED.ToDbString();
 
+            try 
+            {
+                var payload = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.Dictionary<string, object>>(job.PayloadJson);
+                if (payload != null && payload.TryGetValue("accountId", out var accountIdObj) && int.TryParse(accountIdObj.ToString(), out int accountId))
+                {
+                    var account = await dbContext.ConnectedAccounts.FirstOrDefaultAsync(a => a.Id == accountId, cancellationToken);
+                    if (account != null && account.Status == AccountStatus.BUSY.ToDbString())
+                    {
+                        account.Status = AccountStatus.ACTIVE.ToDbString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to update ConnectedAccount status for Job {JobId} during watchdog scan", job.Id);
+            }
+
             try
             {
                 return await dbContext.SaveChangesAsync(cancellationToken);
