@@ -52,6 +52,10 @@ namespace SaaS.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UiModuleCode")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
@@ -130,6 +134,10 @@ namespace SaaS.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -139,6 +147,9 @@ namespace SaaS.Infrastructure.Migrations
 
                     b.HasIndex("UserId", "BotId")
                         .HasDatabaseName("IX_ConnectedAccounts_UserId_BotId");
+
+                    b.HasIndex("UserId", "Status")
+                        .HasDatabaseName("IX_ConnectedAccounts_UserId_Status");
 
                     b.ToTable("ConnectedAccounts", (string)null);
                 });

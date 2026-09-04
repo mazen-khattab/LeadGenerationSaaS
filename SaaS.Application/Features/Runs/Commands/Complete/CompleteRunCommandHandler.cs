@@ -113,6 +113,16 @@ namespace SaaS.Application.Features.Runs.Commands.Complete
             run.CollectedLeadsCount = newLeads.Count;
             run.EndedAt = DateTime.UtcNow;
 
+            if (run.AccountId.HasValue)
+            {
+                var account = await _context.ConnectedAccounts.FirstOrDefaultAsync(a => a.Id == run.AccountId, cancellationToken);
+                if (account != null && account.Status == AccountStatus.BUSY.ToDbString())
+                {
+                    account.Status = AccountStatus.ACTIVE.ToDbString();
+                    account.LastStatusUpdatedAt = DateTime.UtcNow;
+                }
+            }
+
             await _context.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Run {RunId} successfully marked as completed with {CollectedLeadsCount} new leads", run.Id, run.CollectedLeadsCount);
 

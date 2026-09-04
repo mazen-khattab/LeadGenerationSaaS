@@ -6,6 +6,6 @@ namespace SaaS.Application.Common.Interfaces
 {
     public interface IUserBotService
     {
-        Task<bool> OwnerShipCheck(Guid userId, int botId, CancellationToken cancellationToken);
+        Task<bool> CheckOwnershipAsync(Guid userId, int botId, CancellationToken cancellationToken);
     }
 }

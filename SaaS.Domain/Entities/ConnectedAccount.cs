@@ -17,6 +17,7 @@ namespace SaaS.Domain.Entities
         
         // Status: "Active", "Busy", "CoolingDown", "AccountFlagged", "Banned"
         public string Status { get; set; } = AccountStatus.ACTIVE.ToDbString();
+        public DateTime LastStatusUpdatedAt { get; set; }
 
         // Navigation Properties
         public ConnectedAccountCookie Cookie { get; set; } = null!;

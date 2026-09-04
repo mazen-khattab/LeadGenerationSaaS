@@ -14,6 +14,7 @@ namespace SaaS.Domain.Enums
         BadRequest, // => 400
         ConcurrencyConflict, // => 409
         ValidationError, // => 422,
+        TooManyRequests, // => 429
         ServerError, // => 500
     }
 }

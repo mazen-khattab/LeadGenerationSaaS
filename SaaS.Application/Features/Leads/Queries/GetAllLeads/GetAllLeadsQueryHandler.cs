@@ -35,7 +35,7 @@ namespace SaaS.Application.Features.Leads.Queries.GetAllLeads
 
             // Ownership check
             _logger.LogDebug("Checking ownership of BotId: {BotId} for UserId: {UserId}", request.BotId, request.UserId);
-            var hasBot = await _userBotService.OwnerShipCheck(request.UserId, request.BotId, cancellationToken);
+            var hasBot = await _userBotService.CheckOwnershipAsync(request.UserId, request.BotId, cancellationToken);
 
             if (!hasBot)
             {

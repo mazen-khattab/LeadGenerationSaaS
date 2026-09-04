@@ -35,6 +35,9 @@ public class ConnectedAccountConfiguration : IEntityTypeConfiguration<ConnectedA
             .IsRequired()
             .HasDefaultValue(true);
 
+        builder.Property(ca => ca.LastStatusUpdatedAt)
+            .IsRequired();
+
         builder.HasOne(a => a.Cookie)
             .WithOne(t => t.Account)
             .HasForeignKey<ConnectedAccountCookie>(t => t.AccountId);
@@ -54,5 +57,8 @@ public class ConnectedAccountConfiguration : IEntityTypeConfiguration<ConnectedA
         // would not satisfy the BotId filter without an extra key lookup.
         builder.HasIndex(ca => new { ca.UserId, ca.BotId })
             .HasDatabaseName("IX_ConnectedAccounts_UserId_BotId");
+
+        builder.HasIndex(ca => new { ca.UserId, ca.Status })
+            .HasDatabaseName("IX_ConnectedAccounts_UserId_Status");
     }
 }

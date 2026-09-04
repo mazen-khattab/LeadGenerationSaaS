@@ -23,7 +23,7 @@ namespace SaaS.Application.Features.TargetGroups.Commands.Add
         {
             var dto = request.GroupDto;
 
-            var hasBot = await _userBotService.OwnerShipCheck(request.UserId, dto.BotId, cancellationToken);
+            var hasBot = await _userBotService.CheckOwnershipAsync(request.UserId, dto.BotId, cancellationToken);
 
             if (!hasBot)
             {

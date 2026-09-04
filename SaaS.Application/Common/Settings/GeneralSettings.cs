@@ -8,5 +8,6 @@ namespace SaaS.Application.Common.Settings
     {
         public const string SectionName = "GeneralSettings";
         public int DailyLimitResetHour { get; set; } = 12;
+        public int AccountCooldownperiodDays { get; set; } = 1;
     }
 }

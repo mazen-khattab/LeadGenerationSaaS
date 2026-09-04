@@ -71,6 +71,7 @@ namespace SaaS.Infrastructure.Extensions
 
             // Register background hosted services
             services.AddHostedService<JobTimeoutWatchdogService>();
+            services.AddHostedService<AccountCooldownWatchdogService>();
 
             services.AddSingleton<IJobStalenessStrategy, MessagingJobStalenessStrategy>();
 
