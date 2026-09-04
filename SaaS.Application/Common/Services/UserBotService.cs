@@ -16,7 +16,7 @@ namespace SaaS.Application.Common.Services
             _dbContext = dbContext;
         }
 
-        public async Task<bool> OwnerShipCheck(Guid userId, int botId, CancellationToken cancellationToken) 
+        public async Task<bool> CheckOwnershipAsync(Guid userId, int botId, CancellationToken cancellationToken) 
             => await _dbContext.UserBots
                 .AsNoTracking()
                 .AnyAsync(

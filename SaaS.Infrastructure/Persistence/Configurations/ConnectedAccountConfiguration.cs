@@ -35,6 +35,9 @@ public class ConnectedAccountConfiguration : IEntityTypeConfiguration<ConnectedA
             .IsRequired()
             .HasDefaultValue(true);
 
+        builder.Property(ca => ca.LastStatusUpdatedAt)
+            .IsRequired();
+
         builder.HasOne(a => a.Cookie)
             .WithOne(t => t.Account)
             .HasForeignKey<ConnectedAccountCookie>(t => t.AccountId);

@@ -118,7 +118,8 @@ namespace SaaS.Application.Features.Runs.Commands.Complete
                 var account = await _context.ConnectedAccounts.FirstOrDefaultAsync(a => a.Id == run.AccountId, cancellationToken);
                 if (account != null && account.Status == AccountStatus.BUSY.ToDbString())
                 {
-                    account.Status = AccountStatus.COOLING_DOWN.ToDbString();
+                    account.Status = AccountStatus.ACTIVE.ToDbString();
+                    account.LastStatusUpdatedAt = DateTime.UtcNow;
                 }
             }
 

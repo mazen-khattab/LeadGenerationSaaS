@@ -1,13 +1,11 @@
 using MediatR;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SaaS.Application.Common.Interfaces;
 using SaaS.Application.Common.Models;
 using SaaS.Domain.Enums;
 using SaaS.Domain.Extensions;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SaaS.Application.Features.Worker.Commands.UpdateJobStatus
 {
@@ -37,35 +35,26 @@ namespace SaaS.Application.Features.Worker.Commands.UpdateJobStatus
                 return ApiResponse<bool>.Failure("Job not found.", ErrorType.NotFound);
             }
 
-            if (Enum.TryParse<JobStatus>(request.Status, true, out var jobStatusEnum))
-            {
-                job.Status = jobStatusEnum.ToDbString();
+            // Try to convert the coming status from the request to JobStatus enum, if it fails, we will just throw an error. This is to ensure that we only accept valid statuses.
+            var jobStatusEnum = request.Status.ParseFromDb();
 
-                if (jobStatusEnum == JobStatus.COMPLETED || jobStatusEnum == JobStatus.FAILED)
+            job.Status = jobStatusEnum.ToDbString();
+
+            if (jobStatusEnum == JobStatus.COMPLETED || jobStatusEnum == JobStatus.FAILED)
+            {
+                var payload = JsonSerializer.Deserialize<Dictionary<string, object>>(job.PayloadJson);
+                if (payload != null && payload.TryGetValue("accountId", out var accountIdObj) && int.TryParse(accountIdObj.ToString(), out int accountId))
                 {
-                    try 
+                    var account = await _context.ConnectedAccounts.FirstOrDefaultAsync(a => a.Id == accountId, cancellationToken);
+                    if (account != null && account.Status == AccountStatus.BUSY.ToDbString())
                     {
-                        var payload = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.Dictionary<string, object>>(job.PayloadJson);
-                        if (payload != null && payload.TryGetValue("accountId", out var accountIdObj) && int.TryParse(accountIdObj.ToString(), out int accountId))
-                        {
-                            var account = await _context.ConnectedAccounts.FirstOrDefaultAsync(a => a.Id == accountId, cancellationToken);
-                            if (account != null && account.Status == AccountStatus.BUSY.ToDbString())
-                            {
-                                account.Status = jobStatusEnum == JobStatus.COMPLETED 
-                                    ? AccountStatus.COOLING_DOWN.ToDbString() 
-                                    : AccountStatus.ACTIVE.ToDbString();
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning(ex, "Failed to update ConnectedAccount status for Job {JobId}", job.Id);
+                        account.Status = jobStatusEnum == JobStatus.COMPLETED
+                            ? AccountStatus.COOLING_DOWN.ToDbString()
+                            : AccountStatus.ACTIVE.ToDbString();
+
+                        account.LastStatusUpdatedAt = DateTime.UtcNow;
                     }
                 }
-            }
-            else
-            {
-                job.Status = request.Status;
             }
 
             await _context.SaveChangesAsync(cancellationToken);

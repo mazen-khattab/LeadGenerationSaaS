@@ -42,14 +42,26 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
             _logger.LogInformation("Starting DispatchMessagingJob for UserId: {UserId}, BotId: {BotId} with {LeadCount} leads.", 
                 request.UserId, request.BotId, request.LeadIds?.Count ?? 0);
 
-            // Ownership check
-            _logger.LogDebug("Checking ownership of BotId: {BotId} for UserId: {UserId}", request.BotId, request.UserId);
-            var hasBot = await _userBotService.OwnerShipCheck(request.UserId, request.BotId, cancellationToken);
+            //// Ownership check
+            //_logger.LogDebug("Checking ownership of BotId: {BotId} for UserId: {UserId}", request.BotId, request.UserId);
+            //var hasBot = await _userBotService.CheckOwnershipAsync(request.UserId, request.BotId, cancellationToken);
 
-            if (!hasBot)
+            //if (!hasBot)
+            //{
+            //    _logger.LogWarning("Ownership check failed for UserId: {UserId}, BotId: {BotId}.", request.UserId, request.BotId);
+            //    return ApiResponse<DispatchMessagingResultDto>.Failure("User or bot not found", ErrorType.NotFound);
+            //}
+
+            // Check for existing processing job
+            var processingStatus = JobStatus.PROCESSING.ToDbString();
+            var hasProcessingJob = await _dbContext.Jobs
+                .OrderByDescending(j => j.CreatedAt)
+                .AnyAsync(j => j.UserId == request.UserId && j.BotId == request.BotId && j.Status == processingStatus, cancellationToken);
+
+            if (hasProcessingJob)
             {
-                _logger.LogWarning("Ownership check failed for UserId: {UserId}, BotId: {BotId}.", request.UserId, request.BotId);
-                return ApiResponse<DispatchMessagingResultDto>.Failure("User or bot not found", ErrorType.NotFound);
+                _logger.LogWarning("A processing job already exists for UserId: {UserId}, BotId: {BotId}.", request.UserId, request.BotId);
+                return ApiResponse<DispatchMessagingResultDto>.Failure("A job is already processing for this bot. Please wait for it to finish.", ErrorType.TooManyRequests);
             }
 
             // Fetch active connected account for this bot and user including cookie
@@ -103,6 +115,7 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
 
             // Set Account Status to BUSY
             account.Status = AccountStatus.BUSY.ToDbString();
+            account.LastStatusUpdatedAt = DateTime.UtcNow;
 
             // Create Job record
             _logger.LogDebug("Creating MESSAGING job record for UserId: {UserId}, BotId: {BotId}", request.UserId, request.BotId);
@@ -144,10 +157,9 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
                 if (!result.IsSuccess)
                 {
                     _logger.LogError("Failed to reach Node worker for JobId: {JobId}. Marking job as FAILED.", job.Id);
+
                     // Update job status to Failed and revert account
-                    job.Status = JobStatus.FAILED.ToDbString();
-                    account.Status = AccountStatus.ACTIVE.ToDbString();
-                    await _dbContext.SaveChangesAsync(CancellationToken.None);
+                    await RevertStateOnFailureAsync(job, account);
 
                     return ApiResponse<DispatchMessagingResultDto>.Failure("Failed to reach worker server. Please try again later.", ErrorType.ServerError);
                 }
@@ -156,18 +168,15 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
             {
                 _logger.LogWarning(ex, "Dispatch operation timed out or was cancelled for JobId: {JobId}. Marking job as FAILED.", job.Id);
 
-                job.Status = JobStatus.FAILED.ToDbString();
-                account.Status = AccountStatus.ACTIVE.ToDbString();
-                await _dbContext.SaveChangesAsync(CancellationToken.None); // Ensure save goes through
-                throw;
+                await RevertStateOnFailureAsync(job, account);
+
+                return ApiResponse<DispatchMessagingResultDto>.Failure("The request timed out or was cancelled.", ErrorType.ServerError);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while dispatching JobId: {JobId} to Node worker. Marking job as FAILED.", job.Id);
 
-                job.Status = JobStatus.FAILED.ToDbString();
-                account.Status = AccountStatus.ACTIVE.ToDbString();
-                await _dbContext.SaveChangesAsync(CancellationToken.None);
+                await RevertStateOnFailureAsync(job, account);
 
                 return ApiResponse<DispatchMessagingResultDto>.Failure("An unexpected error occurred while dispatching the job.", ErrorType.ServerError);
             }
@@ -175,6 +184,14 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
             _logger.LogInformation("Job {JobId} successfully accepted by Node worker for background processing.", job.Id);
             var responseDto = new DispatchMessagingResultDto(job.Id, job.Status, request.LeadIds.Count);
             return ApiResponse<DispatchMessagingResultDto>.Success(responseDto, "Job accepted successfully.");
+        }
+
+        private async Task RevertStateOnFailureAsync(Job job, ConnectedAccount account)
+        {
+            job.Status = JobStatus.FAILED.ToDbString();
+            account.Status = AccountStatus.ACTIVE.ToDbString();
+            account.LastStatusUpdatedAt = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync(CancellationToken.None);
         }
     }
 }

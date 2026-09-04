@@ -22,7 +22,7 @@ namespace SaaS.Domain.Extensions
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, "Unmapped JobStatus value.")
         };
 
-        public static JobStatus ParseFromDb(string dbValue) => dbValue switch
+        public static JobStatus ParseFromDb(this string dbValue) => dbValue switch
         {
             "Pending" => JobStatus.PENDING,
             "Processing" => JobStatus.PROCESSING,

@@ -43,7 +43,7 @@ namespace SaaS.Application.Features.Leads.Queries.GetAllowedPendingLeads
 
             // Ownership check
             _logger.LogDebug("Validating bot ownership for UserId: {UserId}, BotId: {BotId}", request.UserId, request.BotId);
-            var owns = await _userBotService.OwnerShipCheck(request.UserId, request.BotId, cancellationToken);
+            var owns = await _userBotService.CheckOwnershipAsync(request.UserId, request.BotId, cancellationToken);
             if (!owns)
             {
                 _logger.LogWarning("Ownership check failed. User {UserId} does not own Bot {BotId}", request.UserId, request.BotId);

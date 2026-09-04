@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SaaS.Infrastructure
+namespace SaaS.Application.Common.Settings
 {
     public class JobWatchdogOptions
     {

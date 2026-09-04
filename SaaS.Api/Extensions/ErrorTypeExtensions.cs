@@ -15,6 +15,7 @@ namespace SaaS.Api.Extensions
                 ErrorType.InsufficientStock => StatusCodes.Status400BadRequest,
                 ErrorType.BadRequest => StatusCodes.Status400BadRequest,
                 ErrorType.ValidationError => StatusCodes.Status422UnprocessableEntity,
+                ErrorType.TooManyRequests => StatusCodes.Status429TooManyRequests,
                 ErrorType.None => StatusCodes.Status200OK,
                 ErrorType.ServerError => StatusCodes.Status500InternalServerError,
                 _ => StatusCodes.Status500InternalServerError

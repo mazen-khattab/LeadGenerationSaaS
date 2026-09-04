@@ -51,7 +51,7 @@ namespace SaaS.Application.Features.Runs.Commands.Create
 
             _logger.LogDebug("Checking bot ownership. UserId: {UserId}, BotId: {BotId}", userId, botId);
 
-            var hasBot = await _userBotService.OwnerShipCheck(userId, botId, cancellationToken);
+            var hasBot = await _userBotService.CheckOwnershipAsync(userId, botId, cancellationToken);
 
             if (!hasBot)
             {
@@ -59,6 +59,30 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                 return ApiResponse<int>.Failure("User or bot not found", ErrorType.NotFound);
             }
             _logger.LogDebug("Bot ownership confirmed. UserId: {UserId}, BotId: {BotId}", userId, botId);
+
+            _logger.LogDebug("Evaluating rate-limit and cooldown for UserId: {UserId}, BotId: {BotId}", userId, botId);
+            var lastRun = await _context.Runs
+                .AsNoTracking()
+                .Where(r => r.UserId == userId && r.BotId == botId)
+                .OrderByDescending(r => r.StartedAt)
+                .Select(r => new { r.EndedAt })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (lastRun != null)
+            {
+                if (lastRun.EndedAt == null)
+                {
+                    _logger.LogWarning("Run creation blocked. The previous run is still in progress for UserId: {UserId}, BotId: {BotId}", userId, botId);
+                    return ApiResponse<int>.Failure("The previous run is still in progress. Please wait until it completes.", ErrorType.TooManyRequests);
+                }
+
+                var nextAvailableTime = lastRun.EndedAt.Value.AddMinutes(account.Bot!.CooldownMinutes);
+                if (DateTime.UtcNow < nextAvailableTime)
+                {
+                    _logger.LogWarning("Run creation blocked due to cooldown. UserId: {UserId}, BotId: {BotId}, NextAvailable: {NextAvailable}", userId, botId, nextAvailableTime);
+                    return ApiResponse<int>.Failure($"Cooldown active. You can start a new run after {nextAvailableTime:g} UTC.", ErrorType.TooManyRequests);
+                }
+            }
 
             _logger.LogDebug("Loading connected account. ConnectedAccountId: {ConnectedAccountId}", connectedAccountId);
             // Fetch connected account with its cookie and bot
@@ -139,6 +163,7 @@ namespace SaaS.Application.Features.Runs.Commands.Create
 
             // Set Account Status to BUSY
             account.Status = AccountStatus.BUSY.ToDbString();
+            account.LastStatusUpdatedAt = DateTime.UtcNow;
 
             // 1. Save Run to DB (Without holding transaction open during HTTP call)
             await _context.Runs.AddAsync(run, cancellationToken);
@@ -182,7 +207,10 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                 
                 // 3. Compensation: Mark as failed if dispatch fails
                 run.Status = RunStatus.FAILED.ToDbString();
+
                 account.Status = AccountStatus.ACTIVE.ToDbString();
+                account.LastStatusUpdatedAt = DateTime.UtcNow;
+
                 await _context.SaveChangesAsync(cancellationToken);
                 
                 return ApiResponse<int>.Failure("Failed to dispatch run to external system.", ErrorType.ServerError);

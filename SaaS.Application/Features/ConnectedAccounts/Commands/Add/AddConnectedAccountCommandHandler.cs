@@ -34,7 +34,7 @@ namespace SaaS.Application.Features.ConnectedAccounts.Commands.Add
                 encrypted = _encryptionService.Encrypt(accountInfo.Cookies);
             }
 
-            var hasBot = await _userBotService.OwnerShipCheck(request.UserId, accountInfo.BotId, cancellationToken);
+            var hasBot = await _userBotService.CheckOwnershipAsync(request.UserId, accountInfo.BotId, cancellationToken);
 
             if (!hasBot)
             {
