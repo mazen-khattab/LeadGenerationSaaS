@@ -4,7 +4,7 @@ using Moq;
 using SaaS.Application.Common.Dtos;
 using SaaS.Application.Common.Interfaces;
 using SaaS.Application.Common.Models;
-using SaaS.Application.Features.Scrapes.Commands.Create;
+using SaaS.Application.Features.Runs.Commands.Create;
 using SaaS.Application.UnitTests.Common;
 using SaaS.Domain.Entities;
 using SaaS.Domain.Enums;
@@ -15,29 +15,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
+namespace SaaS.Application.UnitTests.Features.Runs.Commands.Create
 {
-    public class CreateScrapeCommandHandlerTests
+    public class CreateRunCommandHandlerTests
     {
         private readonly Mock<IEncryptionService> _encryptionServiceMock;
         private readonly Mock<INetworkClient> _networkClientMock;
         private readonly Mock<IN8nWebhookResolver> _webhookResolverMock;
         private readonly Mock<IUserBotService> _userBotServiceMock;
-        private readonly Mock<ILogger<CreateScrapeCommandHandler>> _loggerMock;
+        private readonly Mock<ILogger<CreateRunCommandHandler>> _loggerMock;
 
-        public CreateScrapeCommandHandlerTests()
+        public CreateRunCommandHandlerTests()
         {
             _encryptionServiceMock = new Mock<IEncryptionService>();
             _networkClientMock = new Mock<INetworkClient>();
             _webhookResolverMock = new Mock<IN8nWebhookResolver>();
             _userBotServiceMock = new Mock<IUserBotService>();
-            _loggerMock = new Mock<ILogger<CreateScrapeCommandHandler>>();
+            _loggerMock = new Mock<ILogger<CreateRunCommandHandler>>();
         }
 
         private MockAppDbContext CreateDbContext()
         {
             var options = new DbContextOptionsBuilder<MockAppDbContext>()
-                .UseInMemoryDatabase(databaseName: $"CreateScrapeDb_{Guid.NewGuid()}")
+                .UseInMemoryDatabase(databaseName: $"CreateRunDb_{Guid.NewGuid()}")
                 .Options;
 
             return new MockAppDbContext(options);
@@ -51,7 +51,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
 
             _webhookResolverMock
                 .Setup(w => w.GetWebhookUrl(uiCode))
-                .Returns("https://n8n.example.com/webhook/scrapes");
+                .Returns("https://n8n.example.com/webhook/runs");
 
             _networkClientMock
                 .Setup(n => n.PostJsonAsync(It.IsAny<string>(), It.IsAny<object>(), ExternalSystem.N8n, It.IsAny<CancellationToken>()))
@@ -70,11 +70,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, 1, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, 1, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -97,11 +97,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, 999, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, 999, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -142,11 +142,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -158,7 +158,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
         }
 
         [Fact]
-        public async Task Handle_WhenPreviousScrapeIsStillInProgress_ShouldReturnTooManyRequestsFailure()
+        public async Task Handle_WhenPreviousRunIsStillInProgress_ShouldReturnTooManyRequestsFailure()
         {
             // Arrange
             using var dbContext = CreateDbContext();
@@ -176,8 +176,8 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 Status = AccountStatus.ACTIVE.ToDbString()
             };
 
-            // Previous scrape with EndedAt == null (still running)
-            var activeScrape = new Scrape
+            // Previous run with EndedAt == null (still running)
+            var activeRun = new Run
             {
                 Id = 1,
                 UserId = userId,
@@ -185,23 +185,23 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 AccountId = accountId,
                 StartedAt = DateTime.UtcNow.AddMinutes(-30),
                 EndedAt = null,
-                Status = ScrapeStatus.RUNNING.ToDbString()
+                Status = RunStatus.RUNNING.ToDbString()
             };
 
             await dbContext.Bots.AddAsync(bot);
             await dbContext.ConnectedAccounts.AddAsync(account);
-            await dbContext.Scrapes.AddAsync(activeScrape);
+            await dbContext.Runs.AddAsync(activeRun);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
             _userBotServiceMock
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -209,7 +209,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
             // Assert
             Assert.False(result.IsSuccess);
             Assert.Equal(ErrorType.TooManyRequests, result.ErrorType);
-            Assert.Equal("The previous scrape is still in progress. Please wait until it completes.", result.Message);
+            Assert.Equal("The previous run is still in progress. Please wait until it completes.", result.Message);
         }
 
         [Fact]
@@ -231,8 +231,8 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 Status = AccountStatus.ACTIVE.ToDbString()
             };
 
-            // Previous scrape ended 10 minutes ago, cooldown is 60 minutes -> 50 minutes remaining
-            var lastScrape = new Scrape
+            // Previous run ended 10 minutes ago, cooldown is 60 minutes -> 50 minutes remaining
+            var lastRun = new Run
             {
                 Id = 1,
                 UserId = userId,
@@ -240,23 +240,23 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 AccountId = accountId,
                 StartedAt = DateTime.UtcNow.AddMinutes(-40),
                 EndedAt = DateTime.UtcNow.AddMinutes(-10),
-                Status = ScrapeStatus.COMPLETED.ToDbString()
+                Status = RunStatus.COMPLETED.ToDbString()
             };
 
             await dbContext.Bots.AddAsync(bot);
             await dbContext.ConnectedAccounts.AddAsync(account);
-            await dbContext.Scrapes.AddAsync(lastScrape);
+            await dbContext.Runs.AddAsync(lastRun);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
             _userBotServiceMock
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -264,7 +264,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
             // Assert
             Assert.False(result.IsSuccess);
             Assert.Equal(ErrorType.TooManyRequests, result.ErrorType);
-            Assert.Contains("Cooldown active. You can start a new scrape after", result.Message);
+            Assert.Contains("Cooldown active. You can start a new run after", result.Message);
         }
 
         [Fact]
@@ -295,11 +295,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, nonExistentGroupId, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, nonExistentGroupId, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -337,11 +337,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -392,11 +392,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -449,11 +449,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -465,7 +465,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
         }
 
         [Fact]
-        public async Task Handle_WhenAllConditionsMet_ShouldCreateScrapeAndDispatchExternalCallSuccessfully()
+        public async Task Handle_WhenAllConditionsMet_ShouldCreateRunAndDispatchExternalCallSuccessfully()
         {
             // Arrange
             using var dbContext = CreateDbContext();
@@ -506,8 +506,8 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 CompanyPitch = "We provide dental leads"
             };
 
-            // Previous scrape completed long ago, cooldown satisfied
-            var previousScrape = new Scrape
+            // Previous run completed long ago, cooldown satisfied
+            var previousRun = new Run
             {
                 Id = 1,
                 UserId = userId,
@@ -515,14 +515,14 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 AccountId = accountId,
                 StartedAt = DateTime.UtcNow.AddHours(-2),
                 EndedAt = DateTime.UtcNow.AddHours(-1),
-                Status = ScrapeStatus.COMPLETED.ToDbString()
+                Status = RunStatus.COMPLETED.ToDbString()
             };
 
             await dbContext.Bots.AddAsync(bot);
             await dbContext.ConnectedAccounts.AddAsync(account);
             await dbContext.TargetGroups.AddAsync(targetGroup);
             await dbContext.UserSettings.AddAsync(userSetting);
-            await dbContext.Scrapes.AddAsync(previousScrape);
+            await dbContext.Runs.AddAsync(previousRun);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
             SetupValidMocks(botId, "BOT_FACEBOOK");
@@ -531,11 +531,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, groupId, "{\"maxLeads\": 50}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, groupId, "{\"maxLeads\": 50}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -543,16 +543,16 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
             // Assert
             Assert.True(result.IsSuccess);
             Assert.True(result.Data > 0);
-            Assert.Equal("Scrape started successfully.", result.Message);
+            Assert.Equal("Run started successfully.", result.Message);
 
-            var scrape = await dbContext.Scrapes.FindAsync(result.Data);
-            Assert.NotNull(scrape);
-            Assert.Equal(userId, scrape.UserId);
-            Assert.Equal(botId, scrape.BotId);
-            Assert.Equal(accountId, scrape.AccountId);
-            Assert.Equal(groupId, scrape.GroupId);
-            Assert.Equal(ScrapeStatus.RUNNING.ToDbString(), scrape.Status);
-            Assert.Equal("{\"maxLeads\": 50}", scrape.InfoJson);
+            var run = await dbContext.Runs.FindAsync(result.Data);
+            Assert.NotNull(run);
+            Assert.Equal(userId, run.UserId);
+            Assert.Equal(botId, run.BotId);
+            Assert.Equal(accountId, run.AccountId);
+            Assert.Equal(groupId, run.GroupId);
+            Assert.Equal(RunStatus.RUNNING.ToDbString(), run.Status);
+            Assert.Equal("{\"maxLeads\": 50}", run.InfoJson);
 
             // Account status should be BUSY
             var updatedAccount = await dbContext.ConnectedAccounts.FindAsync(accountId);
@@ -560,12 +560,12 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
             Assert.Equal(AccountStatus.BUSY.ToDbString(), updatedAccount.Status);
 
             _networkClientMock.Verify(n =>
-                n.PostJsonAsync("https://n8n.example.com/webhook/scrapes", It.IsAny<object>(), ExternalSystem.N8n, It.IsAny<CancellationToken>()),
+                n.PostJsonAsync("https://n8n.example.com/webhook/runs", It.IsAny<object>(), ExternalSystem.N8n, It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
         [Fact]
-        public async Task Handle_WhenTargetGroupIdIsNull_ShouldCreateScrapeWithoutGroupId()
+        public async Task Handle_WhenTargetGroupIdIsNull_ShouldCreateRunWithoutGroupId()
         {
             // Arrange
             using var dbContext = CreateDbContext();
@@ -608,20 +608,20 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
 
             // Assert
             Assert.True(result.IsSuccess);
-            var scrape = await dbContext.Scrapes.FindAsync(result.Data);
-            Assert.NotNull(scrape);
-            Assert.Null(scrape.GroupId);
+            var run = await dbContext.Runs.FindAsync(result.Data);
+            Assert.NotNull(run);
+            Assert.Null(run.GroupId);
         }
 
         [Fact]
@@ -673,11 +673,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -685,12 +685,12 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
             // Assert
             Assert.False(result.IsSuccess);
             Assert.Equal(ErrorType.ServerError, result.ErrorType);
-            Assert.Equal("Failed to dispatch scrape to external system.", result.Message);
+            Assert.Equal("Failed to dispatch run to external system.", result.Message);
 
-            // Verify compensation: Scrape status is FAILED, Account status restored to ACTIVE
-            var scrape = await dbContext.Scrapes.FirstOrDefaultAsync(r => r.UserId == userId);
-            Assert.NotNull(scrape);
-            Assert.Equal(ScrapeStatus.FAILED.ToDbString(), scrape.Status);
+            // Verify compensation: Run status is FAILED, Account status restored to ACTIVE
+            var run = await dbContext.Runs.FirstOrDefaultAsync(r => r.UserId == userId);
+            Assert.NotNull(run);
+            Assert.Equal(RunStatus.FAILED.ToDbString(), run.Status);
 
             var updatedAccount = await dbContext.ConnectedAccounts.FindAsync(accountId);
             Assert.NotNull(updatedAccount);
@@ -746,11 +746,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
                 .Setup(s => s.CheckOwnershipAsync(userId, botId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var handler = new CreateScrapeCommandHandler(
+            var handler = new CreateRunCommandHandler(
                 dbContext, _encryptionServiceMock.Object, _networkClientMock.Object,
                 _webhookResolverMock.Object, _userBotServiceMock.Object, _loggerMock.Object);
 
-            var command = new CreateScrapeCommand(userId, new CreateScrapeDto(botId, accountId, null, "{}"));
+            var command = new CreateRunCommand(userId, new CreateRunDto(botId, accountId, null, "{}"));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -758,12 +758,12 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
             // Assert
             Assert.False(result.IsSuccess);
             Assert.Equal(ErrorType.ServerError, result.ErrorType);
-            Assert.Equal("Failed to dispatch scrape to external system.", result.Message);
+            Assert.Equal("Failed to dispatch run to external system.", result.Message);
 
             // Verify compensation
-            var scrape = await dbContext.Scrapes.FirstOrDefaultAsync(r => r.UserId == userId);
-            Assert.NotNull(scrape);
-            Assert.Equal(ScrapeStatus.FAILED.ToDbString(), scrape.Status);
+            var run = await dbContext.Runs.FirstOrDefaultAsync(r => r.UserId == userId);
+            Assert.NotNull(run);
+            Assert.Equal(RunStatus.FAILED.ToDbString(), run.Status);
 
             var updatedAccount = await dbContext.ConnectedAccounts.FindAsync(accountId);
             Assert.NotNull(updatedAccount);

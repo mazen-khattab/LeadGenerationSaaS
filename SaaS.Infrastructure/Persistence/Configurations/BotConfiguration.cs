@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SaaS.Domain.Entities;
 
@@ -40,6 +40,6 @@ public class BotConfiguration : IEntityTypeConfiguration<Bot>
             .HasDefaultValue(true);
 
         // All 1-to-many relationships from Bot (UserBot, ConnectedAccount, TargetGroup,
-        // Scrape, Lead) are configured in each dependent entity's own configuration file.
+        // Run, Lead) are configured in each dependent entity's own configuration file.
     }
 }

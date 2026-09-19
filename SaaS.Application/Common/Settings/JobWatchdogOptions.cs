@@ -14,7 +14,7 @@ namespace SaaS.Application.Common.Settings
 
         /// <summary>
         /// How long we wait for the Node.js worker's liveness endpoint before assuming it's unreachable.
-        /// Must stay short - this scrapes once per candidate-stuck job, inside the watchdog loop.
+        /// Must stay short - this runs once per candidate-stuck job, inside the watchdog loop.
         /// </summary>
         public int LivenessCheckTimeoutSeconds { get; set; } = 10;
     }

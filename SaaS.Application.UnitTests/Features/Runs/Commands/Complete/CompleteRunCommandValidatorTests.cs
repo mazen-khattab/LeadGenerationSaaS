@@ -1,25 +1,25 @@
 using FluentValidation.TestHelper;
 using SaaS.Application.Common.Dtos;
-using SaaS.Application.Features.Scrapes.Commands.Complete;
+using SaaS.Application.Features.Runs.Commands.Complete;
 using System.Collections.Generic;
 using Xunit;
 
-namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
+namespace SaaS.Application.UnitTests.Features.Runs.Commands.Complete
 {
-    public class CompleteScrapeCommandValidatorTests
+    public class CompleteRunCommandValidatorTests
     {
-        private readonly CompleteScrapeCommandValidator _validator;
+        private readonly CompleteRunCommandValidator _validator;
 
-        public CompleteScrapeCommandValidatorTests()
+        public CompleteRunCommandValidatorTests()
         {
-            _validator = new CompleteScrapeCommandValidator();
+            _validator = new CompleteRunCommandValidator();
         }
 
         [Fact]
         public void Validate_WhenLeadsIsNotNull_ShouldNotHaveValidationError()
         {
             // Arrange - empty list is valid
-            var command = new CompleteScrapeCommand(1, new List<ScrapedLeadDto>());
+            var command = new CompleteRunCommand(1, new List<ScrapedLeadDto>());
 
             // Act
             var result = _validator.TestValidate(command);
@@ -36,7 +36,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             {
                 new ScrapedLeadDto("ext-1", "alice", "Alice Smith", "hello", "{}")
             };
-            var command = new CompleteScrapeCommand(1, leads);
+            var command = new CompleteRunCommand(1, leads);
 
             // Act
             var result = _validator.TestValidate(command);
@@ -49,7 +49,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
         public void Validate_WhenLeadsIsNull_ShouldHaveValidationError()
         {
             // Arrange
-            var command = new CompleteScrapeCommand(1, null!);
+            var command = new CompleteRunCommand(1, null!);
 
             // Act
             var result = _validator.TestValidate(command);

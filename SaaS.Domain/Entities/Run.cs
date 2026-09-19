@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SaaS.Domain.Entities
 {
-    public class Scrape
+    public class Run
     {
         public int Id { get; set; }
         public Guid UserId { get; set; }

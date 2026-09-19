@@ -4,7 +4,7 @@ using Moq;
 using SaaS.Application.Common.Dtos;
 using SaaS.Application.Common.Interfaces;
 using SaaS.Application.Common.Models;
-using SaaS.Application.Features.Scrapes.Commands.Complete;
+using SaaS.Application.Features.Runs.Commands.Complete;
 using SaaS.Application.UnitTests.Common;
 using SaaS.Domain.Entities;
 using SaaS.Domain.Enums;
@@ -16,23 +16,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
+namespace SaaS.Application.UnitTests.Features.Runs.Commands.Complete
 {
-    public class CompleteScrapeCommandHandlerTests
+    public class CompleteRunCommandHandlerTests
     {
         private readonly Mock<IAppNotificationService> _notificationServiceMock;
-        private readonly Mock<ILogger<CompleteScrapeCommandHandler>> _loggerMock;
+        private readonly Mock<ILogger<CompleteRunCommandHandler>> _loggerMock;
 
-        public CompleteScrapeCommandHandlerTests()
+        public CompleteRunCommandHandlerTests()
         {
             _notificationServiceMock = new Mock<IAppNotificationService>();
-            _loggerMock = new Mock<ILogger<CompleteScrapeCommandHandler>>();
+            _loggerMock = new Mock<ILogger<CompleteRunCommandHandler>>();
         }
 
         private MockAppDbContext CreateDbContext()
         {
             var options = new DbContextOptionsBuilder<MockAppDbContext>()
-                .UseInMemoryDatabase(databaseName: $"CompleteScrapeDb_{Guid.NewGuid()}")
+                .UseInMemoryDatabase(databaseName: $"CompleteRunDb_{Guid.NewGuid()}")
                 .Options;
 
             return new MockAppDbContext(options);
@@ -43,7 +43,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
         {
             // Act & Assert
             var ex = Assert.Throws<ArgumentNullException>(() =>
-                new CompleteScrapeCommandHandler(null!, _notificationServiceMock.Object, _loggerMock.Object));
+                new CompleteRunCommandHandler(null!, _notificationServiceMock.Object, _loggerMock.Object));
 
             Assert.Equal("context", ex.ParamName);
         }
@@ -56,7 +56,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
 
             // Act & Assert
             var ex = Assert.Throws<ArgumentNullException>(() =>
-                new CompleteScrapeCommandHandler(dbContext, null!, _loggerMock.Object));
+                new CompleteRunCommandHandler(dbContext, null!, _loggerMock.Object));
 
             Assert.Equal("notificationService", ex.ParamName);
         }
@@ -69,18 +69,18 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
 
             // Act & Assert
             var ex = Assert.Throws<ArgumentNullException>(() =>
-                new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, null!));
+                new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, null!));
 
             Assert.Equal("logger", ex.ParamName);
         }
 
         [Fact]
-        public async Task Handle_WhenScrapeNotFound_ShouldReturnNotFoundFailure()
+        public async Task Handle_WhenRunNotFound_ShouldReturnNotFoundFailure()
         {
             // Arrange
             using var dbContext = CreateDbContext();
-            var handler = new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
-            var command = new CompleteScrapeCommand(999, new List<ScrapedLeadDto>());
+            var handler = new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
+            var command = new CompleteRunCommand(999, new List<ScrapedLeadDto>());
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -88,18 +88,18 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             // Assert
             Assert.False(result.IsSuccess);
             Assert.Equal(ErrorType.NotFound, result.ErrorType);
-            Assert.Equal("Scrape not found.", result.Message);
+            Assert.Equal("Run not found.", result.Message);
         }
 
         [Theory]
         [InlineData("Completed")]
         [InlineData("Failed")]
         [InlineData("Pending")]
-        public async Task Handle_WhenScrapeIsNotRunning_ShouldReturnValidationError(string invalidStatus)
+        public async Task Handle_WhenRunIsNotRunning_ShouldReturnValidationError(string invalidStatus)
         {
             // Arrange
             using var dbContext = CreateDbContext();
-            var scrape = new Scrape
+            var run = new Run
             {
                 Id = 1,
                 UserId = Guid.NewGuid(),
@@ -108,11 +108,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 StartedAt = DateTime.UtcNow.AddMinutes(-10)
             };
 
-            await dbContext.Scrapes.AddAsync(scrape);
+            await dbContext.Runs.AddAsync(run);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
-            var handler = new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
-            var command = new CompleteScrapeCommand(scrape.Id, new List<ScrapedLeadDto>());
+            var handler = new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
+            var command = new CompleteRunCommand(run.Id, new List<ScrapedLeadDto>());
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -120,11 +120,11 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             // Assert
             Assert.False(result.IsSuccess);
             Assert.Equal(ErrorType.ValidationError, result.ErrorType);
-            Assert.Equal("Scrape is not in progress or has already been finalized.", result.Message);
+            Assert.Equal("Run is not in progress or has already been finalized.", result.Message);
         }
 
         [Fact]
-        public async Task Handle_WhenNoIncomingLeads_ShouldCompleteScrapeWithZeroCollectedLeads()
+        public async Task Handle_WhenNoIncomingLeads_ShouldCompleteRunWithZeroCollectedLeads()
         {
             // Arrange
             using var dbContext = CreateDbContext();
@@ -139,22 +139,22 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 Status = AccountStatus.BUSY.ToDbString()
             };
 
-            var scrape = new Scrape
+            var run = new Run
             {
                 Id = 1,
                 UserId = userId,
                 BotId = 1,
                 AccountId = accountId,
-                Status = ScrapeStatus.RUNNING.ToDbString(),
+                Status = RunStatus.RUNNING.ToDbString(),
                 StartedAt = DateTime.UtcNow.AddMinutes(-5)
             };
 
             await dbContext.ConnectedAccounts.AddAsync(account);
-            await dbContext.Scrapes.AddAsync(scrape);
+            await dbContext.Runs.AddAsync(run);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
-            var handler = new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
-            var command = new CompleteScrapeCommand(scrape.Id, new List<ScrapedLeadDto>());
+            var handler = new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
+            var command = new CompleteRunCommand(run.Id, new List<ScrapedLeadDto>());
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -162,13 +162,13 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             // Assert
             Assert.True(result.IsSuccess);
             Assert.True(result.Data);
-            Assert.Equal("Scrape completed with no leads.", result.Message);
+            Assert.Equal("Run completed with no leads.", result.Message);
 
-            var updatedScrape = await dbContext.Scrapes.FindAsync(scrape.Id);
-            Assert.NotNull(updatedScrape);
-            Assert.Equal(ScrapeStatus.COMPLETED.ToDbString(), updatedScrape.Status);
-            Assert.Equal(0, updatedScrape.CollectedLeadsCount);
-            Assert.NotNull(updatedScrape.EndedAt);
+            var updatedRun = await dbContext.Runs.FindAsync(run.Id);
+            Assert.NotNull(updatedRun);
+            Assert.Equal(RunStatus.COMPLETED.ToDbString(), updatedRun.Status);
+            Assert.Equal(0, updatedRun.CollectedLeadsCount);
+            Assert.NotNull(updatedRun.EndedAt);
 
             var updatedAccount = await dbContext.ConnectedAccounts.FindAsync(accountId);
             Assert.NotNull(updatedAccount);
@@ -176,7 +176,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             Assert.NotEqual(default, updatedAccount.LastStatusUpdatedAt);
 
             _notificationServiceMock.Verify(n =>
-                n.NotifyScrapeCompletedAsync(userId, scrape.Id, 0), Times.Once);
+                n.NotifyRunCompletedAsync(userId, run.Id, 0), Times.Once);
         }
 
         [Fact]
@@ -196,19 +196,19 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 Status = AccountStatus.BUSY.ToDbString()
             };
 
-            var scrape = new Scrape
+            var run = new Run
             {
                 Id = 10,
                 UserId = userId,
                 BotId = 2,
                 AccountId = accountId,
                 GroupId = groupId,
-                Status = ScrapeStatus.RUNNING.ToDbString(),
+                Status = RunStatus.RUNNING.ToDbString(),
                 StartedAt = DateTime.UtcNow.AddMinutes(-15)
             };
 
             await dbContext.ConnectedAccounts.AddAsync(account);
-            await dbContext.Scrapes.AddAsync(scrape);
+            await dbContext.Runs.AddAsync(run);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
             var incomingLeads = new List<ScrapedLeadDto>
@@ -217,8 +217,8 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 new ScrapedLeadDto("ext-102", "User2", "Full Name 2", "Ai message 2", "{\"city\":\"Alexandria\"}")
             };
 
-            var handler = new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
-            var command = new CompleteScrapeCommand(scrape.Id, incomingLeads);
+            var handler = new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
+            var command = new CompleteRunCommand(run.Id, incomingLeads);
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -226,15 +226,15 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             // Assert
             Assert.True(result.IsSuccess);
             Assert.True(result.Data);
-            Assert.Equal("Scrape completed and unique leads persisted.", result.Message);
+            Assert.Equal("Run completed and unique leads persisted.", result.Message);
 
-            var updatedScrape = await dbContext.Scrapes.FindAsync(scrape.Id);
-            Assert.NotNull(updatedScrape);
-            Assert.Equal(ScrapeStatus.COMPLETED.ToDbString(), updatedScrape.Status);
-            Assert.Equal(2, updatedScrape.CollectedLeadsCount);
-            Assert.NotNull(updatedScrape.EndedAt);
+            var updatedRun = await dbContext.Runs.FindAsync(run.Id);
+            Assert.NotNull(updatedRun);
+            Assert.Equal(RunStatus.COMPLETED.ToDbString(), updatedRun.Status);
+            Assert.Equal(2, updatedRun.CollectedLeadsCount);
+            Assert.NotNull(updatedRun.EndedAt);
 
-            var persistedLeads = await dbContext.Leads.Include(l => l.Detail).Where(l => l.ScrapeId == scrape.Id).ToListAsync();
+            var persistedLeads = await dbContext.Leads.Include(l => l.Detail).Where(l => l.RunId == run.Id).ToListAsync();
             Assert.Equal(2, persistedLeads.Count);
 
             var lead1 = persistedLeads.FirstOrDefault(l => l.ExternalId == "ext-101");
@@ -251,7 +251,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             Assert.Equal("{\"city\":\"Cairo\"}", lead1.Detail.MetaDataJson);
 
             _notificationServiceMock.Verify(n =>
-                n.NotifyScrapeCompletedAsync(userId, scrape.Id, 2), Times.Once);
+                n.NotifyRunCompletedAsync(userId, run.Id, 2), Times.Once);
         }
 
         [Fact]
@@ -261,12 +261,12 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             using var dbContext = CreateDbContext();
             var userId = Guid.NewGuid();
 
-            var scrape = new Scrape
+            var run = new Run
             {
                 Id = 1,
                 UserId = userId,
                 BotId = 1,
-                Status = ScrapeStatus.RUNNING.ToDbString(),
+                Status = RunStatus.RUNNING.ToDbString(),
                 StartedAt = DateTime.UtcNow.AddMinutes(-5)
             };
 
@@ -282,7 +282,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 CreatedAt = DateTime.UtcNow.AddDays(-1)
             };
 
-            await dbContext.Scrapes.AddAsync(scrape);
+            await dbContext.Runs.AddAsync(run);
             await dbContext.Leads.AddAsync(existingLead);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
@@ -292,8 +292,8 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 new ScrapedLeadDto("ext-brand-new", "Brand New User", "New Full", "Msg 2", "{}")
             };
 
-            var handler = new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
-            var command = new CompleteScrapeCommand(scrape.Id, incomingLeads);
+            var handler = new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
+            var command = new CompleteRunCommand(run.Id, incomingLeads);
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -302,17 +302,17 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             Assert.True(result.IsSuccess);
             Assert.True(result.Data);
 
-            var updatedScrape = await dbContext.Scrapes.FindAsync(scrape.Id);
-            Assert.NotNull(updatedScrape);
-            Assert.Equal(1, updatedScrape.CollectedLeadsCount);
+            var updatedRun = await dbContext.Runs.FindAsync(run.Id);
+            Assert.NotNull(updatedRun);
+            Assert.Equal(1, updatedRun.CollectedLeadsCount);
 
             var allLeads = await dbContext.Leads.Where(l => l.UserId == userId).ToListAsync();
             Assert.Equal(2, allLeads.Count);
             Assert.Contains(allLeads, l => l.ExternalId == "ext-existing" && l.Id == 100);
-            Assert.Contains(allLeads, l => l.ExternalId == "ext-brand-new" && l.ScrapeId == scrape.Id);
+            Assert.Contains(allLeads, l => l.ExternalId == "ext-brand-new" && l.RunId == run.Id);
 
             _notificationServiceMock.Verify(n =>
-                n.NotifyScrapeCompletedAsync(userId, scrape.Id, 1), Times.Once);
+                n.NotifyRunCompletedAsync(userId, run.Id, 1), Times.Once);
         }
 
         [Fact]
@@ -322,12 +322,12 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             using var dbContext = CreateDbContext();
             var userId = Guid.NewGuid();
 
-            var scrape = new Scrape
+            var run = new Run
             {
                 Id = 1,
                 UserId = userId,
                 BotId = 1,
-                Status = ScrapeStatus.RUNNING.ToDbString(),
+                Status = RunStatus.RUNNING.ToDbString(),
                 StartedAt = DateTime.UtcNow.AddMinutes(-5)
             };
 
@@ -340,7 +340,7 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 Status = LeadStatus.COMPLETED.ToDbString()
             };
 
-            await dbContext.Scrapes.AddAsync(scrape);
+            await dbContext.Runs.AddAsync(run);
             await dbContext.Leads.AddAsync(existingLead);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
@@ -349,22 +349,22 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 new ScrapedLeadDto("ext-dup", "Duplicate", "Dup Full", null!, null!)
             };
 
-            var handler = new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
-            var command = new CompleteScrapeCommand(scrape.Id, incomingLeads);
+            var handler = new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
+            var command = new CompleteRunCommand(run.Id, incomingLeads);
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
 
             // Assert
             Assert.True(result.IsSuccess);
-            Assert.Equal("Scrape completed with no leads.", result.Message);
+            Assert.Equal("Run completed with no leads.", result.Message);
 
-            var updatedScrape = await dbContext.Scrapes.FindAsync(scrape.Id);
-            Assert.NotNull(updatedScrape);
-            Assert.Equal(0, updatedScrape.CollectedLeadsCount);
+            var updatedRun = await dbContext.Runs.FindAsync(run.Id);
+            Assert.NotNull(updatedRun);
+            Assert.Equal(0, updatedRun.CollectedLeadsCount);
 
             _notificationServiceMock.Verify(n =>
-                n.NotifyScrapeCompletedAsync(userId, scrape.Id, 0), Times.Once);
+                n.NotifyRunCompletedAsync(userId, run.Id, 0), Times.Once);
         }
 
         [Fact]
@@ -374,16 +374,16 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             using var dbContext = CreateDbContext();
             var userId = Guid.NewGuid();
 
-            var scrape = new Scrape
+            var run = new Run
             {
                 Id = 1,
                 UserId = userId,
                 BotId = 1,
-                Status = ScrapeStatus.RUNNING.ToDbString(),
+                Status = RunStatus.RUNNING.ToDbString(),
                 StartedAt = DateTime.UtcNow.AddMinutes(-5)
             };
 
-            await dbContext.Scrapes.AddAsync(scrape);
+            await dbContext.Runs.AddAsync(run);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
             var incomingLeads = new List<ScrapedLeadDto>
@@ -392,19 +392,19 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 new ScrapedLeadDto("   ", "Whitespace Id", "White Full", null!, null!)
             };
 
-            var handler = new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
-            var command = new CompleteScrapeCommand(scrape.Id, incomingLeads);
+            var handler = new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
+            var command = new CompleteRunCommand(run.Id, incomingLeads);
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
 
             // Assert
             Assert.True(result.IsSuccess);
-            Assert.Equal("Scrape completed with no leads.", result.Message);
+            Assert.Equal("Run completed with no leads.", result.Message);
 
-            var updatedScrape = await dbContext.Scrapes.FindAsync(scrape.Id);
-            Assert.NotNull(updatedScrape);
-            Assert.Equal(0, updatedScrape.CollectedLeadsCount);
+            var updatedRun = await dbContext.Runs.FindAsync(run.Id);
+            Assert.NotNull(updatedRun);
+            Assert.Equal(0, updatedRun.CollectedLeadsCount);
         }
 
         [Fact]
@@ -414,24 +414,24 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             using var dbContext = CreateDbContext();
             var userId = Guid.NewGuid();
 
-            var scrape = new Scrape
+            var run = new Run
             {
                 Id = 1,
                 UserId = userId,
                 BotId = 1,
-                Status = ScrapeStatus.RUNNING.ToDbString(),
+                Status = RunStatus.RUNNING.ToDbString(),
                 StartedAt = DateTime.UtcNow.AddMinutes(-5)
             };
 
-            await dbContext.Scrapes.AddAsync(scrape);
+            await dbContext.Runs.AddAsync(run);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
             _notificationServiceMock
-                .Setup(n => n.NotifyScrapeCompletedAsync(It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(n => n.NotifyRunCompletedAsync(It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ThrowsAsync(new InvalidOperationException("SignalR connection failed"));
 
-            var handler = new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
-            var command = new CompleteScrapeCommand(scrape.Id, new List<ScrapedLeadDto>());
+            var handler = new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
+            var command = new CompleteRunCommand(run.Id, new List<ScrapedLeadDto>());
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -440,9 +440,9 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
             Assert.True(result.IsSuccess);
             Assert.True(result.Data);
 
-            var updatedScrape = await dbContext.Scrapes.FindAsync(scrape.Id);
-            Assert.NotNull(updatedScrape);
-            Assert.Equal(ScrapeStatus.COMPLETED.ToDbString(), updatedScrape.Status);
+            var updatedRun = await dbContext.Runs.FindAsync(run.Id);
+            Assert.NotNull(updatedRun);
+            Assert.Equal(RunStatus.COMPLETED.ToDbString(), updatedRun.Status);
         }
 
         [Fact]
@@ -461,22 +461,22 @@ namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Complete
                 Status = AccountStatus.COOLING_DOWN.ToDbString()
             };
 
-            var scrape = new Scrape
+            var run = new Run
             {
                 Id = 1,
                 UserId = userId,
                 BotId = 1,
                 AccountId = accountId,
-                Status = ScrapeStatus.RUNNING.ToDbString(),
+                Status = RunStatus.RUNNING.ToDbString(),
                 StartedAt = DateTime.UtcNow.AddMinutes(-5)
             };
 
             await dbContext.ConnectedAccounts.AddAsync(account);
-            await dbContext.Scrapes.AddAsync(scrape);
+            await dbContext.Runs.AddAsync(run);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
-            var handler = new CompleteScrapeCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
-            var command = new CompleteScrapeCommand(scrape.Id, new List<ScrapedLeadDto>());
+            var handler = new CompleteRunCommandHandler(dbContext, _notificationServiceMock.Object, _loggerMock.Object);
+            var command = new CompleteRunCommand(run.Id, new List<ScrapedLeadDto>());
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);

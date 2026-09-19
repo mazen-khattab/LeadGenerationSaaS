@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SaaS.Application.Common.Interfaces;
 using SaaS.Domain.Entities;
 using System;
@@ -21,7 +21,7 @@ namespace SaaS.Infrastructure.Persistence
         public DbSet<ConnectedAccount> ConnectedAccounts => Set<ConnectedAccount>();
         public DbSet<ConnectedAccountCookie> ConnectedAccountCookies => Set<ConnectedAccountCookie>();
         public DbSet<TargetGroup> TargetGroups => Set<TargetGroup>();
-        public DbSet<Scrape> Scrapes => Set<Scrape>();
+        public DbSet<Run> Runs => Set<Run>();
         public DbSet<Job> Jobs => Set<Job>();
         public DbSet<Lead> Leads => Set<Lead>();
         public DbSet<LeadDetail> LeadDetails => Set<LeadDetail>();

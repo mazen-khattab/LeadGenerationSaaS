@@ -1,4 +1,4 @@
-using SaaS.Application.Common.Dtos;
+﻿using SaaS.Application.Common.Dtos;
 using SaaS.Application.Common.Helpers;
 using SaaS.Application.Common.Interfaces;
 using SaaS.Domain.Entities;
@@ -31,11 +31,11 @@ namespace SaaS.Application.Mapper
             return [.. accounts.Select(account => account.ToDto())];
         }
 
-        public static ConnectedAccountDetailsDto ToDetailsDto(this ConnectedAccount account, IEncryptionService encryptionService,int relatedLeadsCount, int scrapesCount)
+        public static ConnectedAccountDetailsDto ToDetailsDto(this ConnectedAccount account, IEncryptionService encryptionService,int relatedLeadsCount, int runsCount)
         {
             ArgumentNullException.ThrowIfNull(account, nameof(account));
             ArgumentOutOfRangeException.ThrowIfNegative(relatedLeadsCount);
-            ArgumentOutOfRangeException.ThrowIfNegative(scrapesCount);
+            ArgumentOutOfRangeException.ThrowIfNegative(runsCount);
 
             return new ConnectedAccountDetailsDto
             (
@@ -46,7 +46,7 @@ namespace SaaS.Application.Mapper
                 ExpAt: account.Cookie.CookiesExpireDate,
                 IsActive: account.IsActive,
                 RelatedLeadsCount: relatedLeadsCount,
-                ScrapesCount: scrapesCount
+                RunsCount: runsCount
             );
         }
     }
