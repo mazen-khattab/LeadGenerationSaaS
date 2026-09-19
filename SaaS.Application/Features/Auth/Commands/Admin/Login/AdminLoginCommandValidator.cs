@@ -1,11 +1,11 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SaaS.Application.Features.Auth.Commands.Admin.Login
 {
-    internal class AdminLoginCommandValidator : AbstractValidator<AdminLoginCommand>
+    public class AdminLoginCommandValidator : AbstractValidator<AdminLoginCommand>
     {
         public AdminLoginCommandValidator()
         {

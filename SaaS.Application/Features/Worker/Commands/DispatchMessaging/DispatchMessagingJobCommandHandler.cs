@@ -39,7 +39,7 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
 
         public async Task<ApiResponse<DispatchMessagingResultDto>> Handle(DispatchMessagingJobCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Starting DispatchMessagingJob for UserId: {UserId}, BotId: {BotId} with {LeadCount} leads.", 
+            _logger.LogInformation("Starting DispatchMessagingJob for UserId: {UserId}, BotId: {BotId} with {LeadCount} leads.",
                 request.UserId, request.BotId, request.LeadIds?.Count ?? 0);
 
             //// Ownership check
@@ -88,7 +88,7 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
             var expireDate = account.Cookie?.CookiesExpireDate ?? DateTime.MinValue;
             if (expireDate <= DateTime.UtcNow || string.IsNullOrWhiteSpace(decryptedCookies))
             {
-                _logger.LogWarning("Account cookies are expired or invalid for UserId: {UserId}, AccountId: {AccountId}. ExpireDate: {ExpireDate}", 
+                _logger.LogWarning("Account cookies are expired or invalid for UserId: {UserId}, AccountId: {AccountId}. ExpireDate: {ExpireDate}",
                     request.UserId, request.AccountId, expireDate);
                 return ApiResponse<DispatchMessagingResultDto>.Failure("Your account cookies has been expired. Pls refresh it.", ErrorType.ValidationError);
             }
@@ -102,7 +102,7 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
 
             if (leads.Count != request.LeadIds.Count)
             {
-                _logger.LogWarning("Lead validation failed. Expected {ExpectedCount}, but found {FoundCount} valid leads for UserId: {UserId}, BotId: {BotId}.", 
+                _logger.LogWarning("Lead validation failed. Expected {ExpectedCount}, but found {FoundCount} valid leads for UserId: {UserId}, BotId: {BotId}.",
                     request.LeadIds.Count, leads.Count, request.UserId, request.BotId);
                 return ApiResponse<DispatchMessagingResultDto>.Failure("One or more leads are invalid or do not belong to the user/bot.", ErrorType.ValidationError);
             }
@@ -141,12 +141,20 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
                 jobId = job.Id,
                 userId = request.UserId.ToString(),
                 botId = request.BotId,
+                accountId = account.Id,
                 cookies = decryptedCookies,
-                leads = leads.Select(l => new { id = l.Id, profileName = l.ProfileName, profileUrl = l.ProfileUrl, aiMessage = l.AiMessage ?? string.Empty }).ToArray()
+                leads = leads.Select(l => new
+                {
+                    id = l.Id,
+                    profileUrl = l.ProfileUrl,
+                    profileName = l.ProfileName,
+                    aiMessage = l.AiMessage ?? string.Empty,
+                    status = l.Status
+                }).ToArray()
             };
 
             // The node.js endpoint URL.
-            string endpoint = "/api/worker/dispatch-messaging";
+            string endpoint = "/dispatch-messaging";
 
             try
             {

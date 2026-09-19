@@ -14,7 +14,7 @@ namespace SaaS.Domain.Extensions
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, "Unmapped RunStatus value.")
         };
 
-        public static RunStatus ParseFromDb(string dbValue) => dbValue switch
+        public static RunStatus ParseFromDbToRunStatus(this string dbValue) => dbValue switch
         {
             "Running" => RunStatus.RUNNING,
             "Pending" => RunStatus.PENDING,

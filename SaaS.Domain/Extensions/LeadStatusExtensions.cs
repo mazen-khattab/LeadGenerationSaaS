@@ -13,7 +13,7 @@ namespace SaaS.Domain.Extensions
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, "Unmapped LeadStatus value.")
         };
 
-        public static LeadStatus ParseFromDb(string dbValue) => dbValue switch
+        public static LeadStatus ParseFromDbToLeadStatus(this string dbValue) => dbValue switch
         {
             "Pending" => LeadStatus.PENDING,
             "Completed" => LeadStatus.COMPLETED,

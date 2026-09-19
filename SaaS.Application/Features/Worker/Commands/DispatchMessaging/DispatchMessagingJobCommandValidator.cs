@@ -18,6 +18,7 @@ namespace SaaS.Application.Features.Worker.Commands.DispatchMessaging
                 .GreaterThan(0).WithMessage("AccountId must be greater than zero.");
 
             RuleFor(x => x.LeadIds)
+                .Cascade(CascadeMode.Stop)
                 .NotNull().WithMessage("LeadIds must be provided.")
                 .Must(l => l.Count >= 1).WithMessage("At least one lead id must be provided.")
                 .Must(l => l.Count <= 100).WithMessage("A maximum of 100 leads can be dispatched in a single job.");

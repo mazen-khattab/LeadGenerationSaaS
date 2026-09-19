@@ -108,5 +108,22 @@ namespace SaaS.Application.UnitTests.Features.ConnectedAccounts.Commands.Process
             unmodifiedAccount.Should().NotBeNull();
             unmodifiedAccount!.Status.Should().Be(AccountStatus.COOLING_DOWN.ToDbString());
         }
+
+        [Fact]
+        public async Task Should_Return_Zero_When_No_Accounts_Are_In_CoolingDown_State()
+        {
+            // Arrange
+            using var dbContext = CreateInMemoryDbContext();
+            var handler = new ProcessAccountCooldownCommandHandler(dbContext, _optionsMock.Object, _loggerMock.Object);
+            var command = new ProcessAccountCooldownCommand();
+
+            // Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Data.Should().Be(0);
+            result.Message.Should().Be("No accounts to reactivate.");
+        }
     }
 }
