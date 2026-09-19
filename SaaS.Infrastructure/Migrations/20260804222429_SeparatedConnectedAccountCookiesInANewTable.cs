@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -12,7 +12,7 @@ namespace SaaS.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             //migrationBuilder.DropForeignKey(
-            //    name: "FK_Jobs_Runs_ScrapeId1",
+            //    name: "FK_Jobs_Runs_RunId1",
             //    table: "Jobs");
 
             //migrationBuilder.DropForeignKey(
@@ -20,7 +20,7 @@ namespace SaaS.Infrastructure.Migrations
             //    table: "Leads");
 
             //migrationBuilder.DropForeignKey(
-            //    name: "FK_Leads_Runs_ScrapeId1",
+            //    name: "FK_Leads_Runs_RunId1",
             //    table: "Leads");
 
             //migrationBuilder.DropForeignKey(
@@ -29,26 +29,26 @@ namespace SaaS.Infrastructure.Migrations
 
             //migrationBuilder.DropForeignKey(
             //    name: "FK_Runs_ConnectedAccounts_ConnectedAccountId",
-            //    table: "Scrapes");
+            //    table: "Runs");
 
             //migrationBuilder.DropForeignKey(
             //    name: "FK_Runs_TargetGroups_TargetGroupId",
-            //    table: "Scrapes");
+            //    table: "Runs");
 
             //migrationBuilder.DropIndex(
             //    name: "IX_Runs_ConnectedAccountId",
-            //    table: "Scrapes");
+            //    table: "Runs");
 
             //migrationBuilder.DropIndex(
             //    name: "IX_Runs_TargetGroupId",
-            //    table: "Scrapes");
+            //    table: "Runs");
 
             //migrationBuilder.DropIndex(
             //    name: "IX_Leads_ConnectedAccountId",
             //    table: "Leads");
 
             //migrationBuilder.DropIndex(
-            //    name: "IX_Leads_ScrapeId1",
+            //    name: "IX_Leads_RunId1",
             //    table: "Leads");
 
             //migrationBuilder.DropIndex(
@@ -56,23 +56,23 @@ namespace SaaS.Infrastructure.Migrations
             //    table: "Leads");
 
             //migrationBuilder.DropIndex(
-            //    name: "IX_Jobs_ScrapeId1",
+            //    name: "IX_Jobs_RunId1",
             //    table: "Jobs");
 
             //migrationBuilder.DropColumn(
             //    name: "ConnectedAccountId",
-            //    table: "Scrapes");
+            //    table: "Runs");
 
             //migrationBuilder.DropColumn(
             //    name: "TargetGroupId",
-            //    table: "Scrapes");
+            //    table: "Runs");
 
             //migrationBuilder.DropColumn(
             //    name: "ConnectedAccountId",
             //    table: "Leads");
 
             //migrationBuilder.DropColumn(
-            //    name: "ScrapeId1",
+            //    name: "RunId1",
             //    table: "Leads");
 
             //migrationBuilder.DropColumn(
@@ -80,7 +80,7 @@ namespace SaaS.Infrastructure.Migrations
             //    table: "Leads");
 
             //migrationBuilder.DropColumn(
-            //    name: "ScrapeId1",
+            //    name: "RunId1",
             //    table: "Jobs");
 
             migrationBuilder.DropColumn(
@@ -131,13 +131,13 @@ namespace SaaS.Infrastructure.Migrations
 
             //migrationBuilder.AddColumn<int>(
             //    name: "ConnectedAccountId",
-            //    table: "Scrapes",
+            //    table: "Runs",
             //    type: "int",
             //    nullable: true);
 
             //migrationBuilder.AddColumn<int>(
             //    name: "TargetGroupId",
-            //    table: "Scrapes",
+            //    table: "Runs",
             //    type: "int",
             //    nullable: true);
 
@@ -148,7 +148,7 @@ namespace SaaS.Infrastructure.Migrations
             //    nullable: true);
 
             //migrationBuilder.AddColumn<int>(
-            //    name: "ScrapeId1",
+            //    name: "RunId1",
             //    table: "Leads",
             //    type: "int",
             //    nullable: true);
@@ -160,7 +160,7 @@ namespace SaaS.Infrastructure.Migrations
             //    nullable: true);
 
             //migrationBuilder.AddColumn<int>(
-            //    name: "ScrapeId1",
+            //    name: "RunId1",
             //    table: "Jobs",
             //    type: "int",
             //    nullable: true);
@@ -181,12 +181,12 @@ namespace SaaS.Infrastructure.Migrations
 
             //migrationBuilder.CreateIndex(
             //    name: "IX_Runs_ConnectedAccountId",
-            //    table: "Scrapes",
+            //    table: "Runs",
             //    column: "ConnectedAccountId");
 
             //migrationBuilder.CreateIndex(
             //    name: "IX_Runs_TargetGroupId",
-            //    table: "Scrapes",
+            //    table: "Runs",
             //    column: "TargetGroupId");
 
             //migrationBuilder.CreateIndex(
@@ -195,9 +195,9 @@ namespace SaaS.Infrastructure.Migrations
             //    column: "ConnectedAccountId");
 
             //migrationBuilder.CreateIndex(
-            //    name: "IX_Leads_ScrapeId1",
+            //    name: "IX_Leads_RunId1",
             //    table: "Leads",
-            //    column: "ScrapeId1");
+            //    column: "RunId1");
 
             //migrationBuilder.CreateIndex(
             //    name: "IX_Leads_TargetGroupId",
@@ -205,15 +205,15 @@ namespace SaaS.Infrastructure.Migrations
             //    column: "TargetGroupId");
 
             //migrationBuilder.CreateIndex(
-            //    name: "IX_Jobs_ScrapeId1",
+            //    name: "IX_Jobs_RunId1",
             //    table: "Jobs",
-            //    column: "ScrapeId1");
+            //    column: "RunId1");
 
             //migrationBuilder.AddForeignKey(
-            //    name: "FK_Jobs_Runs_ScrapeId1",
+            //    name: "FK_Jobs_Runs_RunId1",
             //    table: "Jobs",
-            //    column: "ScrapeId1",
-            //    principalTable: "Scrapes",
+            //    column: "RunId1",
+            //    principalTable: "Runs",
             //    principalColumn: "Id");
 
             //migrationBuilder.AddForeignKey(
@@ -224,10 +224,10 @@ namespace SaaS.Infrastructure.Migrations
             //    principalColumn: "Id");
 
             //migrationBuilder.AddForeignKey(
-            //    name: "FK_Leads_Runs_ScrapeId1",
+            //    name: "FK_Leads_Runs_RunId1",
             //    table: "Leads",
-            //    column: "ScrapeId1",
-            //    principalTable: "Scrapes",
+            //    column: "RunId1",
+            //    principalTable: "Runs",
             //    principalColumn: "Id");
 
             //migrationBuilder.AddForeignKey(
@@ -239,14 +239,14 @@ namespace SaaS.Infrastructure.Migrations
 
             //migrationBuilder.AddForeignKey(
             //    name: "FK_Runs_ConnectedAccounts_ConnectedAccountId",
-            //    table: "Scrapes",
+            //    table: "Runs",
             //    column: "ConnectedAccountId",
             //    principalTable: "ConnectedAccounts",
             //    principalColumn: "Id");
 
             //migrationBuilder.AddForeignKey(
             //    name: "FK_Runs_TargetGroups_TargetGroupId",
-            //    table: "Scrapes",
+            //    table: "Runs",
             //    column: "TargetGroupId",
             //    principalTable: "TargetGroups",
             //    principalColumn: "Id");

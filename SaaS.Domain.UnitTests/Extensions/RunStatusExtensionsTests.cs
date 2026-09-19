@@ -6,14 +6,14 @@ using Xunit;
 
 namespace SaaS.Domain.UnitTests.Extensions
 {
-    public class ScrapeStatusExtensionsTests
+    public class RunStatusExtensionsTests
     {
         [Theory]
-        [InlineData(ScrapeStatus.RUNNING, "Running")]
-        [InlineData(ScrapeStatus.PENDING, "Pending")]
-        [InlineData(ScrapeStatus.COMPLETED, "Completed")]
-        [InlineData(ScrapeStatus.FAILED, "Failed")]
-        public void ToDbString_ValidEnum_ReturnsExpectedDbString(ScrapeStatus status, string expectedDbString)
+        [InlineData(RunStatus.RUNNING, "Running")]
+        [InlineData(RunStatus.PENDING, "Pending")]
+        [InlineData(RunStatus.COMPLETED, "Completed")]
+        [InlineData(RunStatus.FAILED, "Failed")]
+        public void ToDbString_ValidEnum_ReturnsExpectedDbString(RunStatus status, string expectedDbString)
         {
             // Act
             var result = status.ToDbString();
@@ -26,7 +26,7 @@ namespace SaaS.Domain.UnitTests.Extensions
         public void ToDbString_UnmappedEnumValue_ThrowsArgumentOutOfRangeException()
         {
             // Arrange
-            var invalidStatus = (ScrapeStatus)999;
+            var invalidStatus = (RunStatus)999;
 
             // Act
             var act = () => invalidStatus.ToDbString();
@@ -39,8 +39,8 @@ namespace SaaS.Domain.UnitTests.Extensions
         [Fact]
         public void ToDbString_AllEnumMembers_AreMapped()
         {
-            // Ensure every enum member in ScrapeStatus has an explicit mapping in ToDbString
-            foreach (ScrapeStatus status in Enum.GetValues<ScrapeStatus>())
+            // Ensure every enum member in RunStatus has an explicit mapping in ToDbString
+            foreach (RunStatus status in Enum.GetValues<RunStatus>())
             {
                 var act = () => status.ToDbString();
                 act.Should().NotThrow();
@@ -48,14 +48,14 @@ namespace SaaS.Domain.UnitTests.Extensions
         }
 
         [Theory]
-        [InlineData("Running", ScrapeStatus.RUNNING)]
-        [InlineData("Pending", ScrapeStatus.PENDING)]
-        [InlineData("Completed", ScrapeStatus.COMPLETED)]
-        [InlineData("Failed", ScrapeStatus.FAILED)]
-        public void ParseFromDb_ValidDbString_ReturnsExpectedEnum(string dbValue, ScrapeStatus expectedStatus)
+        [InlineData("Running", RunStatus.RUNNING)]
+        [InlineData("Pending", RunStatus.PENDING)]
+        [InlineData("Completed", RunStatus.COMPLETED)]
+        [InlineData("Failed", RunStatus.FAILED)]
+        public void ParseFromDb_ValidDbString_ReturnsExpectedEnum(string dbValue, RunStatus expectedStatus)
         {
             // Act
-            var result = dbValue.ParseFromDbToScrapeStatus();
+            var result = dbValue.ParseFromDbToRunStatus();
 
             // Assert
             result.Should().Be(expectedStatus);
@@ -71,7 +71,7 @@ namespace SaaS.Domain.UnitTests.Extensions
         public void ParseFromDb_UnrecognizedString_ThrowsArgumentOutOfRangeException(string invalidDbValue)
         {
             // Act
-            var act = () => invalidDbValue.ParseFromDbToScrapeStatus();
+            var act = () => invalidDbValue.ParseFromDbToRunStatus();
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>()
@@ -84,7 +84,7 @@ namespace SaaS.Domain.UnitTests.Extensions
             string nullDbValue = null!;
 
             // Act
-            var act = () => nullDbValue.ParseFromDbToScrapeStatus();
+            var act = () => nullDbValue.ParseFromDbToRunStatus();
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>()
@@ -92,15 +92,15 @@ namespace SaaS.Domain.UnitTests.Extensions
         }
 
         [Theory]
-        [InlineData(ScrapeStatus.RUNNING)]
-        [InlineData(ScrapeStatus.PENDING)]
-        [InlineData(ScrapeStatus.COMPLETED)]
-        [InlineData(ScrapeStatus.FAILED)]
-        public void RoundTrip_StatusToDbStringAndBack_ReturnsOriginalStatus(ScrapeStatus originalStatus)
+        [InlineData(RunStatus.RUNNING)]
+        [InlineData(RunStatus.PENDING)]
+        [InlineData(RunStatus.COMPLETED)]
+        [InlineData(RunStatus.FAILED)]
+        public void RoundTrip_StatusToDbStringAndBack_ReturnsOriginalStatus(RunStatus originalStatus)
         {
             // Act
             var dbString = originalStatus.ToDbString();
-            var parsedStatus = dbString.ParseFromDbToScrapeStatus();
+            var parsedStatus = dbString.ParseFromDbToRunStatus();
 
             // Assert
             parsedStatus.Should().Be(originalStatus);
