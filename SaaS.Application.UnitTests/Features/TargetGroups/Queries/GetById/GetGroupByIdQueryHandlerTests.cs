@@ -41,7 +41,7 @@ namespace SaaS.Application.UnitTests.Features.TargetGroups.Queries.GetById
         }
 
         [Fact]
-        public async Task Handle_WhenGroupExists_ShouldReturnGroupDetailsWithLeadsAndRunsCount()
+        public async Task Handle_WhenGroupExists_ShouldReturnGroupDetailsWithLeadsAndScrapesCount()
         {
             // Arrange
             using var dbContext = CreateDbContext();
@@ -78,7 +78,7 @@ namespace SaaS.Application.UnitTests.Features.TargetGroups.Queries.GetById
                 ProfileName = "Lead 2"
             };
 
-            var run1 = new Run
+            var scrape1 = new Scrape
             {
                 Id = 1,
                 UserId = userId,
@@ -89,7 +89,7 @@ namespace SaaS.Application.UnitTests.Features.TargetGroups.Queries.GetById
 
             await dbContext.TargetGroups.AddAsync(group);
             await dbContext.Leads.AddRangeAsync(lead1, lead2);
-            await dbContext.Runs.AddAsync(run1);
+            await dbContext.Scrapes.AddAsync(scrape1);
             await dbContext.SaveChangesAsync(CancellationToken.None);
 
             var handler = new GetGroupByIdQueryHandler(dbContext);
@@ -109,7 +109,7 @@ namespace SaaS.Application.UnitTests.Features.TargetGroups.Queries.GetById
             Assert.Equal("{\"filter\": \"active\"}", result.Data.ConfigJson);
             Assert.True(result.Data.IsActive);
             Assert.Equal(2, result.Data.RelatedLeadsCount);
-            Assert.Equal(1, result.Data.RunsCount);
+            Assert.Equal(1, result.Data.ScrapesCount);
         }
     }
 }

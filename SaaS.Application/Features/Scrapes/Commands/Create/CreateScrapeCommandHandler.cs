@@ -12,24 +12,24 @@ using SaaS.Domain.Enums;
 using Microsoft.Extensions.Logging;
 using SaaS.Domain.Extensions;
 
-namespace SaaS.Application.Features.Runs.Commands.Create
+namespace SaaS.Application.Features.Scrapes.Commands.Create
 {
-    public class CreateRunCommandHandler : IRequestHandler<CreateRunCommand, ApiResponse<int>>
+    public class CreateScrapeCommandHandler : IRequestHandler<CreateScrapeCommand, ApiResponse<int>>
     {
         private readonly IAppDbContext _context;
         private readonly IEncryptionService _encryptionService;
         private readonly INetworkClient _networkClient;
         private readonly IN8nWebhookResolver _webhookResolver;
         private readonly IUserBotService _userBotService;
-        private readonly ILogger<CreateRunCommandHandler> _logger;
+        private readonly ILogger<CreateScrapeCommandHandler> _logger;
 
-        public CreateRunCommandHandler(
+        public CreateScrapeCommandHandler(
             IAppDbContext context,
             IEncryptionService encryptionService,
             INetworkClient networkClient,
             IN8nWebhookResolver webhookResolver,
             IUserBotService userBotService,
-            ILogger<CreateRunCommandHandler> logger)
+            ILogger<CreateScrapeCommandHandler> logger)
         {
             _context = context;
             _encryptionService = encryptionService;
@@ -39,14 +39,14 @@ namespace SaaS.Application.Features.Runs.Commands.Create
             _logger = logger;
         }
 
-        public async Task<ApiResponse<int>> Handle(CreateRunCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<int>> Handle(CreateScrapeCommand request, CancellationToken cancellationToken)
         {
             var userId = request.UserId;
-            var botId = request.CreateRunDto.BotId;
-            var connectedAccountId = request.CreateRunDto.ConnectedAccountId;
-            int? targetGroupId = request.CreateRunDto.TargetGroupId;
+            var botId = request.CreateScrapeDto.BotId;
+            var connectedAccountId = request.CreateScrapeDto.ConnectedAccountId;
+            int? targetGroupId = request.CreateScrapeDto.TargetGroupId;
 
-            _logger.LogInformation("Starting run creation. UserId: {UserId}, BotId: {BotId}, AccountId: {ConnectedAccountId}, GroupId: {TargetGroupId}",
+            _logger.LogInformation("Starting scrape creation. UserId: {UserId}, BotId: {BotId}, AccountId: {ConnectedAccountId}, GroupId: {TargetGroupId}",
                 userId, botId, connectedAccountId, targetGroupId);
 
             _logger.LogDebug("Checking bot ownership. UserId: {UserId}, BotId: {BotId}", userId, botId);
@@ -80,26 +80,26 @@ namespace SaaS.Application.Features.Runs.Commands.Create
             }
 
             _logger.LogDebug("Evaluating rate-limit and cooldown for UserId: {UserId}, BotId: {BotId}", userId, botId);
-            var lastRun = await _context.Runs
+            var lastScrape = await _context.Scrapes
                 .AsNoTracking()
                 .Where(r => r.UserId == userId && r.BotId == botId)
                 .OrderByDescending(r => r.StartedAt)
                 .Select(r => new { r.EndedAt })
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (lastRun != null)
+            if (lastScrape != null)
             {
-                if (lastRun.EndedAt == null)
+                if (lastScrape.EndedAt == null)
                 {
-                    _logger.LogWarning("Run creation blocked. The previous run is still in progress for UserId: {UserId}, BotId: {BotId}", userId, botId);
-                    return ApiResponse<int>.Failure("The previous run is still in progress. Please wait until it completes.", ErrorType.TooManyRequests);
+                    _logger.LogWarning("Scrape creation blocked. The previous scrape is still in progress for UserId: {UserId}, BotId: {BotId}", userId, botId);
+                    return ApiResponse<int>.Failure("The previous scrape is still in progress. Please wait until it completes.", ErrorType.TooManyRequests);
                 }
 
-                var nextAvailableTime = lastRun.EndedAt.Value.AddMinutes(account.Bot!.CooldownMinutes);
+                var nextAvailableTime = lastScrape.EndedAt.Value.AddMinutes(account.Bot!.CooldownMinutes);
                 if (DateTime.UtcNow < nextAvailableTime)
                 {
-                    _logger.LogWarning("Run creation blocked due to cooldown. UserId: {UserId}, BotId: {BotId}, NextAvailable: {NextAvailable}", userId, botId, nextAvailableTime);
-                    return ApiResponse<int>.Failure($"Cooldown active. You can start a new run after {nextAvailableTime:g} UTC.", ErrorType.TooManyRequests);
+                    _logger.LogWarning("Scrape creation blocked due to cooldown. UserId: {UserId}, BotId: {BotId}, NextAvailable: {NextAvailable}", userId, botId, nextAvailableTime);
+                    return ApiResponse<int>.Failure($"Cooldown active. You can start a new scrape after {nextAvailableTime:g} UTC.", ErrorType.TooManyRequests);
                 }
             }
 
@@ -147,29 +147,29 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                 return ApiResponse<int>.Failure("Your account cookies has been expired. Pls refresh it.", ErrorType.ValidationError);
             }
 
-            // Create run entity and persist initial state
-            var run = new Run
+            // Create scrape entity and persist initial state
+            var scrape = new Scrape
             {
                 UserId = userId,
                 BotId = account.BotId,
                 AccountId = connectedAccountId,
-                InfoJson = request.CreateRunDto.InfoJson,
+                InfoJson = request.CreateScrapeDto.InfoJson,
                 StartedAt = DateTime.UtcNow,
-                Status = RunStatus.RUNNING.ToDbString()
+                Status = ScrapeStatus.RUNNING.ToDbString()
             };
 
             if (targetGroupId > 0)
-                run.GroupId = targetGroupId;
+                scrape.GroupId = targetGroupId;
 
             // Set Account Status to BUSY
             account.Status = AccountStatus.BUSY.ToDbString();
             account.LastStatusUpdatedAt = DateTime.UtcNow;
 
-            // 1. Save Run to DB (Without holding transaction open during HTTP call)
-            await _context.Runs.AddAsync(run, cancellationToken);
+            // 1. Save Scrape to DB (Without holding transaction open during HTTP call)
+            await _context.Scrapes.AddAsync(scrape, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Run persisted successfully. RunId: {RunId}, UserId: {UserId}", run.Id, userId);
+            _logger.LogInformation("Scrape persisted successfully. ScrapeId: {ScrapeId}, UserId: {UserId}", scrape.Id, userId);
 
             try
             {
@@ -178,20 +178,20 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                 var webhookUrl = _webhookResolver.GetWebhookUrl(botCode);
 
                 // Build payload
-                using var doc = JsonDocument.Parse(request.CreateRunDto.InfoJson);
+                using var doc = JsonDocument.Parse(request.CreateScrapeDto.InfoJson);
                 JsonElement infoElement = doc.RootElement.Clone();
 
                 var payload = new
                 {
-                    RunId = run.Id,
+                    ScrapeId = scrape.Id,
                     Cookies = decryptedCookies,
                     Info = infoElement,
                     companyInfo.CompanyName,
                     companyInfo.CompanyPitch,
                 };
 
-                _logger.LogInformation("Sending run payload to external system. RunId: {RunId}, ExternalSystem: {ExternalSystem}", 
-                    run.Id, ExternalSystem.N8n);
+                _logger.LogInformation("Sending scrape payload to external system. ScrapeId: {ScrapeId}, ExternalSystem: {ExternalSystem}", 
+                    scrape.Id, ExternalSystem.N8n);
 
                 // 2. Make External HTTP Call
                 var sent = await _networkClient.PostJsonAsync(webhookUrl, payload, ExternalSystem.N8n, cancellationToken);
@@ -203,21 +203,21 @@ namespace SaaS.Application.Features.Runs.Commands.Create
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to dispatch run to external system. RunId: {RunId}", run.Id);
+                _logger.LogError(ex, "Failed to dispatch scrape to external system. ScrapeId: {ScrapeId}", scrape.Id);
                 
                 // 3. Compensation: Mark as failed if dispatch fails
-                run.Status = RunStatus.FAILED.ToDbString();
+                scrape.Status = ScrapeStatus.FAILED.ToDbString();
 
                 account.Status = AccountStatus.ACTIVE.ToDbString();
                 account.LastStatusUpdatedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync(cancellationToken);
                 
-                return ApiResponse<int>.Failure("Failed to dispatch run to external system.", ErrorType.ServerError);
+                return ApiResponse<int>.Failure("Failed to dispatch scrape to external system.", ErrorType.ServerError);
             }
 
-            _logger.LogInformation("Run started successfully. RunId: {RunId}, UserId: {UserId}", run.Id, userId);
-            return ApiResponse<int>.Success(run.Id, "Run started successfully.");
+            _logger.LogInformation("Scrape started successfully. ScrapeId: {ScrapeId}, UserId: {UserId}", scrape.Id, userId);
+            return ApiResponse<int>.Success(scrape.Id, "Scrape started successfully.");
         }
     }
 }

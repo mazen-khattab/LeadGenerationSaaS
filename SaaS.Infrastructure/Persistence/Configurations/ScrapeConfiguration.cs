@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SaaS.Domain.Entities;
 
 namespace SaaS.Infrastructure.Persistence.Configurations;
 
-public class RunConfiguration : IEntityTypeConfiguration<Run>
+public class ScrapeConfiguration : IEntityTypeConfiguration<Scrape>
 {
-    public void Configure(EntityTypeBuilder<Run> builder)
+    public void Configure(EntityTypeBuilder<Scrape> builder)
     {
-        builder.ToTable("Runs");
+        builder.ToTable("Scrapes");
 
         builder.HasKey(r => r.Id);
 
@@ -38,37 +38,37 @@ public class RunConfiguration : IEntityTypeConfiguration<Run>
             .HasColumnType("varchar(50)")
             .HasDefaultValue("Running");
 
-        // User is required and Restrict-deleted: a Run must always belong to a user,
-        // and that user cannot be hard-deleted while runs still reference them.
+        // User is required and Restrict-deleted: a Scrape must always belong to a user,
+        // and that user cannot be hard-deleted while scrapes still reference them.
         builder.HasOne(r => r.User)
-            .WithMany(u => u.Runs)
+            .WithMany(u => u.Scrapes)
             .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // Bot / TargetGroup / ConnectedAccount are optional (nullable FK) and use
-        // SetNull on delete: a Run is historical data, so if the Bot/Group/Account it
-        // used is later removed, the Run survives with that reference cleared instead
+        // SetNull on delete: a Scrape is historical data, so if the Bot/Group/Account it
+        // used is later removed, the Scrape survives with that reference cleared instead
         // of being deleted itself or blocking the parent's deletion.
         builder.HasOne(r => r.Bot)
-            .WithMany(b => b.Runs)
+            .WithMany(b => b.Scrapes)
             .HasForeignKey(r => r.BotId)
             .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
 
         builder.HasOne(r => r.Group)
-            .WithMany(g => g.Runs)
+            .WithMany(g => g.Scrapes)
             .HasForeignKey(r => r.GroupId)
             .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
 
         builder.HasOne(r => r.Account)
-            .WithMany(a => a.Runs)
+            .WithMany(a => a.Scrapes)
             .HasForeignKey(r => r.AccountId)
             .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
 
-        // Covers the dashboard-style query: "this user's runs, for this bot, filtered
-        // by status" (e.g. list all 'Running' runs for User X on Bot Y).
+        // Covers the dashboard-style query: "this user's scrapes, for this bot, filtered
+        // by status" (e.g. list all 'Running' scrapes for User X on Bot Y).
         builder.HasIndex(r => new { r.UserId, r.BotId, r.Status })
             .HasDatabaseName("IX_Runs_UserId_BotId_Status");
     }

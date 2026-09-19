@@ -1,4 +1,4 @@
-ï»¿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -59,15 +59,15 @@ namespace SaaS.Application.Common.Services
             await strategy.ExecuteAsync(async () =>
             {
                 // Transaction must live inside the lambda: if the strategy retries due to
-                // a transient failure, it re-runs the whole delegate, including starting
-                // a fresh transaction â€” reusing an outer transaction here would be wrong.
+                // a transient failure, it re-scrapes the whole delegate, including starting
+                // a fresh transaction — reusing an outer transaction here would be wrong.
                 await using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
 
                 try
                 {
                     // Revoke any previous active token for this user. ExecuteUpdateAsync
                     // issues an immediate UPDATE (bypasses the change tracker), so both
-                    // IsActive and ExpDate must be set together here â€” a token marked
+                    // IsActive and ExpDate must be set together here — a token marked
                     // inactive should also reflect its real expiry moment for consistency.
                     await _db.UserRefreshTokens
                         .Where(rt => rt.UserId == userId && rt.IsActive)
@@ -92,7 +92,7 @@ namespace SaaS.Application.Common.Services
                     // Not a real failure from the user's point of view: another
                     // concurrent request for the same user already won and persisted
                     // the active session. We simply don't create a second one, and we
-                    // will not throw â€” the caller still gets a successful response.
+                    // will not throw — the caller still gets a successful response.
                     _logger.LogInformation(
                         "Concurrent session request detected for User {UserId}. " +
                         "Another request already established the active session; " +
@@ -104,7 +104,7 @@ namespace SaaS.Application.Common.Services
                 catch
                 {
                     // Any other failure (timeout, connection drop, etc.) must roll back
-                    // and propagate â€” this is a genuine error, unlike the case above.
+                    // and propagate — this is a genuine error, unlike the case above.
                     await transaction.RollbackAsync(cancellationToken);
                     throw;
                 }
@@ -119,7 +119,7 @@ namespace SaaS.Application.Common.Services
                 _logger.LogInformation("Tokens successfully issued and persisted for User {UserId}", userId);
             }
 
-            // Same response shape either way â€” the user's identity data doesn't depend
+            // Same response shape either way — the user's identity data doesn't depend
             // on which concurrent request happened to win the race.
             return new AuthLoginResponseDto(userId.ToString(), email, fullName, "User");
         }
@@ -152,15 +152,15 @@ namespace SaaS.Application.Common.Services
             await strategy.ExecuteAsync(async () =>
             {
                 // Transaction must live inside the lambda: if the strategy retries due to
-                // a transient failure, it re-runs the whole delegate, including starting
-                // a fresh transaction â€” reusing an outer transaction here would be wrong.
+                // a transient failure, it re-scrapes the whole delegate, including starting
+                // a fresh transaction — reusing an outer transaction here would be wrong.
                 await using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
 
                 try
                 {
                     // Revoke any previous active token for this admin. ExecuteUpdateAsync
                     // issues an immediate UPDATE (bypasses the change tracker), so both
-                    // IsActive and ExpDate must be set together here â€” a token marked
+                    // IsActive and ExpDate must be set together here — a token marked
                     // inactive should also reflect its real expiry moment for consistency.
                     await _db.SystemAdminRefreshTokens
                         .Where(rt => rt.AdminId == adminId && rt.IsActive)
@@ -185,7 +185,7 @@ namespace SaaS.Application.Common.Services
                     // Not a real failure from the admin's point of view: another
                     // concurrent request for the same amdmin already won and persisted
                     // the active session. We simply don't create a second one, and we
-                    // will not throw â€” the caller still gets a successful response.
+                    // will not throw — the caller still gets a successful response.
                     _logger.LogInformation(
                         "Concurrent session request detected for Admin {Admin}. " +
                         "Another request already established the active session; " +
@@ -197,7 +197,7 @@ namespace SaaS.Application.Common.Services
                 catch
                 {
                     // Any other failure (timeout, connection drop, etc.) must roll back
-                    // and propagate â€” this is a genuine error, unlike the case above.
+                    // and propagate — this is a genuine error, unlike the case above.
                     await transaction.RollbackAsync(cancellationToken);
                     throw;
                 }
@@ -212,7 +212,7 @@ namespace SaaS.Application.Common.Services
                 _logger.LogInformation("Tokens successfully issued and persisted for Admin {AdminId}", adminId);
             }
 
-            // Same response shape either way â€” the admin's identity data doesn't depend
+            // Same response shape either way — the admin's identity data doesn't depend
             // on which concurrent request happened to win the race.
             return new AuthLoginResponseDto(adminId.ToString(), email, fullName, role);
         }

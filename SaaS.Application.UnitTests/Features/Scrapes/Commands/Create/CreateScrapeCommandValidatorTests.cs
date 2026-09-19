@@ -1,26 +1,26 @@
 using FluentValidation.TestHelper;
 using SaaS.Application.Common.Dtos;
-using SaaS.Application.Features.Runs.Commands.Create;
+using SaaS.Application.Features.Scrapes.Commands.Create;
 using System;
 using Xunit;
 
-namespace SaaS.Application.UnitTests.Features.Runs.Commands.Create
+namespace SaaS.Application.UnitTests.Features.Scrapes.Commands.Create
 {
-    public class CreateRunCommandValidatorTests
+    public class CreateScrapeCommandValidatorTests
     {
-        private readonly CreateRunCommandValidator _validator;
+        private readonly CreateScrapeCommandValidator _validator;
 
-        public CreateRunCommandValidatorTests()
+        public CreateScrapeCommandValidatorTests()
         {
-            _validator = new CreateRunCommandValidator();
+            _validator = new CreateScrapeCommandValidator();
         }
 
         [Fact]
         public void Validate_WhenCommandIsValid_ShouldNotHaveAnyValidationErrors()
         {
             // Arrange
-            var dto = new CreateRunDto(1, 10, 5, "{\"keyword\":\"developer\"}");
-            var command = new CreateRunCommand(Guid.NewGuid(), dto);
+            var dto = new CreateScrapeDto(1, 10, 5, "{\"keyword\":\"developer\"}");
+            var command = new CreateScrapeCommand(Guid.NewGuid(), dto);
 
             // Act
             var result = _validator.TestValidate(command);
@@ -33,8 +33,8 @@ namespace SaaS.Application.UnitTests.Features.Runs.Commands.Create
         public void Validate_WhenUserIdIsEmpty_ShouldHaveValidationError()
         {
             // Arrange
-            var dto = new CreateRunDto(1, 10, null, "{}");
-            var command = new CreateRunCommand(Guid.Empty, dto);
+            var dto = new CreateScrapeDto(1, 10, null, "{}");
+            var command = new CreateScrapeCommand(Guid.Empty, dto);
 
             // Act
             var result = _validator.TestValidate(command);
@@ -51,14 +51,14 @@ namespace SaaS.Application.UnitTests.Features.Runs.Commands.Create
         public void Validate_WhenBotIdIsZeroOrNegative_ShouldHaveValidationError(int invalidBotId)
         {
             // Arrange
-            var dto = new CreateRunDto(invalidBotId, 10, null, "{}");
-            var command = new CreateRunCommand(Guid.NewGuid(), dto);
+            var dto = new CreateScrapeDto(invalidBotId, 10, null, "{}");
+            var command = new CreateScrapeCommand(Guid.NewGuid(), dto);
 
             // Act
             var result = _validator.TestValidate(command);
 
             // Assert
-            result.ShouldHaveValidationErrorFor(x => x.CreateRunDto.BotId);
+            result.ShouldHaveValidationErrorFor(x => x.CreateScrapeDto.BotId);
         }
 
         [Theory]
@@ -68,14 +68,14 @@ namespace SaaS.Application.UnitTests.Features.Runs.Commands.Create
         public void Validate_WhenConnectedAccountIdIsZeroOrNegative_ShouldHaveValidationError(int invalidAccountId)
         {
             // Arrange
-            var dto = new CreateRunDto(1, invalidAccountId, null, "{}");
-            var command = new CreateRunCommand(Guid.NewGuid(), dto);
+            var dto = new CreateScrapeDto(1, invalidAccountId, null, "{}");
+            var command = new CreateScrapeCommand(Guid.NewGuid(), dto);
 
             // Act
             var result = _validator.TestValidate(command);
 
             // Assert
-            result.ShouldHaveValidationErrorFor(x => x.CreateRunDto.ConnectedAccountId)
+            result.ShouldHaveValidationErrorFor(x => x.CreateScrapeDto.ConnectedAccountId)
                 .WithErrorMessage("ConnectedAccountId is required.");
         }
 
@@ -85,14 +85,14 @@ namespace SaaS.Application.UnitTests.Features.Runs.Commands.Create
         public void Validate_WhenInfoJsonIsNullOrEmpty_ShouldHaveValidationError(string? invalidJson)
         {
             // Arrange
-            var dto = new CreateRunDto(1, 10, null, invalidJson!);
-            var command = new CreateRunCommand(Guid.NewGuid(), dto);
+            var dto = new CreateScrapeDto(1, 10, null, invalidJson!);
+            var command = new CreateScrapeCommand(Guid.NewGuid(), dto);
 
             // Act
             var result = _validator.TestValidate(command);
 
             // Assert
-            result.ShouldHaveValidationErrorFor(x => x.CreateRunDto.InfoJson);
+            result.ShouldHaveValidationErrorFor(x => x.CreateScrapeDto.InfoJson);
         }
 
         [Theory]
@@ -102,14 +102,14 @@ namespace SaaS.Application.UnitTests.Features.Runs.Commands.Create
         public void Validate_WhenInfoJsonIsNotValidJson_ShouldHaveValidationError(string invalidJson)
         {
             // Arrange
-            var dto = new CreateRunDto(1, 10, null, invalidJson);
-            var command = new CreateRunCommand(Guid.NewGuid(), dto);
+            var dto = new CreateScrapeDto(1, 10, null, invalidJson);
+            var command = new CreateScrapeCommand(Guid.NewGuid(), dto);
 
             // Act
             var result = _validator.TestValidate(command);
 
             // Assert
-            result.ShouldHaveValidationErrorFor(x => x.CreateRunDto.InfoJson)
+            result.ShouldHaveValidationErrorFor(x => x.CreateScrapeDto.InfoJson)
                 .WithErrorMessage("InfoJson must be valid JSON.");
         }
 
@@ -120,14 +120,14 @@ namespace SaaS.Application.UnitTests.Features.Runs.Commands.Create
         public void Validate_WhenInfoJsonIsValidJson_ShouldNotHaveValidationError(string validJson)
         {
             // Arrange
-            var dto = new CreateRunDto(1, 10, null, validJson);
-            var command = new CreateRunCommand(Guid.NewGuid(), dto);
+            var dto = new CreateScrapeDto(1, 10, null, validJson);
+            var command = new CreateScrapeCommand(Guid.NewGuid(), dto);
 
             // Act
             var result = _validator.TestValidate(command);
 
             // Assert
-            result.ShouldNotHaveValidationErrorFor(x => x.CreateRunDto.InfoJson);
+            result.ShouldNotHaveValidationErrorFor(x => x.CreateScrapeDto.InfoJson);
         }
     }
 }
