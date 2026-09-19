@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using FluentValidation;
 
-namespace SaaS.Application.Features.Runs.Commands.Complete
+namespace SaaS.Application.Features.Scrapes.Commands.Complete
 {
-    public class CompleteRunCommandValidator : AbstractValidator<CompleteRunCommand>
+    public class CompleteScrapeCommandValidator : AbstractValidator<CompleteScrapeCommand>
     {
-        public CompleteRunCommandValidator()
+        public CompleteScrapeCommandValidator()
         {
             RuleFor(x => x.Leads)
                 .NotNull().WithMessage("Leads list must be provided (can be empty).");

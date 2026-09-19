@@ -4,33 +4,33 @@ using Microsoft.AspNetCore.Mvc;
 using SaaS.Application.Common.Dtos;
 using SaaS.Application.Common.Models;
 using SaaS.Api.Extensions;
-using SaaS.Application.Features.Runs.Commands.Create;
-using SaaS.Application.Features.Runs.Commands.Complete;
+using SaaS.Application.Features.Scrapes.Commands.Create;
+using SaaS.Application.Features.Scrapes.Commands.Complete;
 using SaaS.Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 
 namespace SaaS.Api.Controllers.v1
 {
     [ApiController]
-    [Route("api/v1/runs")]
-    public class RunsController : ControllerBase
+    [Route("api/v1/scrapes")]
+    public class ScrapesController : ControllerBase
     {
         private readonly ISender _sender;
 
-        public RunsController(ISender sender)
+        public ScrapesController(ISender sender)
         {
             _sender = sender ?? throw new ArgumentNullException(nameof(sender));
         }
 
         /// <summary>
-        /// Called by n8n when a run completes scraping.
+        /// Called by n8n when a scrape completes scraping.
         /// Protected by X-Webhook-Secret header validated by N8nWebhookAuthorizeFilter.
         /// </summary>
         [HttpPost("{id}/complete")]
         [N8nWebhookAuthorize]
-        public async Task<ActionResult<object>> Complete(int id, [FromBody] CompleteRunDto request)
+        public async Task<ActionResult<object>> Complete(int id, [FromBody] CompleteScrapeDto request)
         {
-            var command = new CompleteRunCommand(id, request?.ExtractedLeads ?? []);
+            var command = new CompleteScrapeCommand(id, request?.ExtractedLeads ?? []);
             var result = await _sender.Send(command);
 
             if (result is not null && result.IsSuccess)
@@ -57,10 +57,10 @@ namespace SaaS.Api.Controllers.v1
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<object>> Create([FromBody] CreateRunDto requestDto)
+        public async Task<ActionResult<object>> Create([FromBody] CreateScrapeDto requestDto)
         {
             var userId = GetUserId();
-            var command = new CreateRunCommand(userId, requestDto);
+            var command = new CreateScrapeCommand(userId, requestDto);
             var result = await _sender.Send(command);
 
             if (result is not null && result.IsSuccess)

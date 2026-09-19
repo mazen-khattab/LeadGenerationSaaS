@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -208,7 +208,7 @@ namespace SaaS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Runs",
+                name: "Scrapes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -272,25 +272,25 @@ namespace SaaS.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<string>(type: "varchar(100)", nullable: false),
                     BotId = table.Column<int>(type: "int", nullable: true),
-                    RunId = table.Column<int>(type: "int", nullable: false),
+                    ScrapeId = table.Column<int>(type: "int", nullable: false),
                     PayloadJson = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "varchar(50)", nullable: false, defaultValue: "Pending"),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    RunId1 = table.Column<int>(type: "int", nullable: true)
+                    ScrapeId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Jobs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Jobs_Runs_RunId",
-                        column: x => x.RunId,
-                        principalTable: "Runs",
+                        name: "FK_Jobs_Runs_ScrapeId",
+                        column: x => x.ScrapeId,
+                        principalTable: "Scrapes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Jobs_Runs_RunId1",
-                        column: x => x.RunId1,
-                        principalTable: "Runs",
+                        name: "FK_Jobs_Runs_ScrapeId1",
+                        column: x => x.ScrapeId1,
+                        principalTable: "Scrapes",
                         principalColumn: "Id");
                 });
 
@@ -304,7 +304,7 @@ namespace SaaS.Infrastructure.Migrations
                     BotId = table.Column<int>(type: "int", nullable: true),
                     GroupId = table.Column<int>(type: "int", nullable: true),
                     AccountId = table.Column<int>(type: "int", nullable: true),
-                    RunId = table.Column<int>(type: "int", nullable: true),
+                    ScrapeId = table.Column<int>(type: "int", nullable: true),
                     ProfileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     ProfileUrl = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     AiMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -312,7 +312,7 @@ namespace SaaS.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     MetaDataJson = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "{}"),
                     ConnectedAccountId = table.Column<int>(type: "int", nullable: true),
-                    RunId1 = table.Column<int>(type: "int", nullable: true),
+                    ScrapeId1 = table.Column<int>(type: "int", nullable: true),
                     TargetGroupId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -336,15 +336,15 @@ namespace SaaS.Infrastructure.Migrations
                         principalTable: "ConnectedAccounts",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Leads_Runs_RunId",
-                        column: x => x.RunId,
-                        principalTable: "Runs",
+                        name: "FK_Leads_Runs_ScrapeId",
+                        column: x => x.ScrapeId,
+                        principalTable: "Scrapes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Leads_Runs_RunId1",
-                        column: x => x.RunId1,
-                        principalTable: "Runs",
+                        name: "FK_Leads_Runs_ScrapeId1",
+                        column: x => x.ScrapeId1,
+                        principalTable: "Scrapes",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Leads_TargetGroups_GroupId",
@@ -386,14 +386,14 @@ namespace SaaS.Infrastructure.Migrations
                 columns: new[] { "UserId", "BotId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Jobs_RunId",
+                name: "IX_Jobs_ScrapeId",
                 table: "Jobs",
-                column: "RunId");
+                column: "ScrapeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Jobs_RunId1",
+                name: "IX_Jobs_ScrapeId1",
                 table: "Jobs",
-                column: "RunId1");
+                column: "ScrapeId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Jobs_Status",
@@ -426,14 +426,14 @@ namespace SaaS.Infrastructure.Migrations
                 column: "ProfileUrl");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Leads_RunId",
+                name: "IX_Leads_ScrapeId",
                 table: "Leads",
-                column: "RunId");
+                column: "ScrapeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Leads_RunId1",
+                name: "IX_Leads_ScrapeId1",
                 table: "Leads",
-                column: "RunId1");
+                column: "ScrapeId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Leads_TargetGroupId",
@@ -441,38 +441,38 @@ namespace SaaS.Infrastructure.Migrations
                 column: "TargetGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Leads_UserId_RunId_Status",
+                name: "IX_Leads_UserId_ScrapeId_Status",
                 table: "Leads",
-                columns: new[] { "UserId", "RunId", "Status" });
+                columns: new[] { "UserId", "ScrapeId", "Status" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Runs_AccountId",
-                table: "Runs",
+                table: "Scrapes",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Runs_BotId",
-                table: "Runs",
+                table: "Scrapes",
                 column: "BotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Runs_ConnectedAccountId",
-                table: "Runs",
+                table: "Scrapes",
                 column: "ConnectedAccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Runs_GroupId",
-                table: "Runs",
+                table: "Scrapes",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Runs_TargetGroupId",
-                table: "Runs",
+                table: "Scrapes",
                 column: "TargetGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Runs_UserId_BotId_Status",
-                table: "Runs",
+                table: "Scrapes",
                 columns: new[] { "UserId", "BotId", "Status" });
 
             migrationBuilder.CreateIndex(
@@ -535,7 +535,7 @@ namespace SaaS.Infrastructure.Migrations
                 name: "UserSettings");
 
             migrationBuilder.DropTable(
-                name: "Runs");
+                name: "Scrapes");
 
             migrationBuilder.DropTable(
                 name: "ConnectedAccounts");

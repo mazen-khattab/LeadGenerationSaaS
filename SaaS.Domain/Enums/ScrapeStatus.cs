@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SaaS.Domain.Enums
 {
-    public enum RunStatus
+    public enum ScrapeStatus
     {
         RUNNING,
         PENDING,

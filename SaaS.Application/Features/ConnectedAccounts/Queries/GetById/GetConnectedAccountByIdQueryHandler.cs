@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SaaS.Application.Common.Dtos;
 using SaaS.Application.Common.Interfaces;
@@ -27,7 +27,7 @@ namespace SaaS.Application.Features.ConnectedAccounts.Queries.GetById
                     Account = x,
                     Cookies = x.Cookie,
                     LeadsCount = x.Leads.Count(),
-                    RunsCount = x.Runs.Count()
+                    ScrapesCount = x.Scrapes.Count()
                 })
                 .FirstOrDefaultAsync(ca => ca.Account.Id == request.Id, cancellationToken);
 
@@ -36,7 +36,7 @@ namespace SaaS.Application.Features.ConnectedAccounts.Queries.GetById
                 return ApiResponse<ConnectedAccountDetailsDto>.Failure($"Connected account with ID {request.Id} not found", ErrorType.NotFound);
             }
 
-            var accountDto = result.Account.ToDetailsDto(_encryptionService, result.LeadsCount, result.RunsCount);
+            var accountDto = result.Account.ToDetailsDto(_encryptionService, result.LeadsCount, result.ScrapesCount);
 
             return ApiResponse<ConnectedAccountDetailsDto>.Success(accountDto, "Connected account has been retrieved successfully");
         }
