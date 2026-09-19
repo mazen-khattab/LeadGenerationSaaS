@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SaaS.Application.Features.Auth.Commands.User.Login
 {
-    internal class UserLoginCommandHandler : IRequestHandler<UserLoginCommand, ApiResponse<AuthLoginResponseDto>>
+    public class UserLoginCommandHandler : IRequestHandler<UserLoginCommand, ApiResponse<AuthLoginResponseDto>>
     {
         private readonly IAppDbContext _db;
         private readonly IPasswordHasherService _passwordHasher;

@@ -5,6 +5,7 @@ using SaaS.Application.Common.Models;
 using SaaS.Domain.Entities;
 using SaaS.Domain.Enums;
 using SaaS.Domain.ExceptionTypes;
+using SaaS.Domain.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -38,6 +39,7 @@ namespace SaaS.Application.Features.ConnectedAccounts.Commands.Update
             entity.DisplayName = accountInfo.DisplayName;
             entity.Platform = accountInfo.Platform;
             entity.IsActive = accountInfo.IsActive;
+            entity.Status = accountInfo.Status.ParseFromDbToAccountStatus().ToDbString();
 
             if (!string.IsNullOrWhiteSpace(accountInfo.EncryptedCookies))
             {

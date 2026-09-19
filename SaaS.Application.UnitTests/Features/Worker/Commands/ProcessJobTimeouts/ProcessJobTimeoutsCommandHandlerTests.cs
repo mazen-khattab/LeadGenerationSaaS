@@ -175,7 +175,7 @@ namespace SaaS.Application.UnitTests.Features.Worker.Commands.ProcessJobTimeouts
 
             // Worker responds with an error (crashed)
             var workerResponse = NetworkResult.Fail(500, "The server was down");
-            _networkClientMock.Setup(n => n.GetAsync($"jobs/status?job_id={job.Id}", ExternalSystem.NodeWorker, It.IsAny<CancellationToken>()))
+            _networkClientMock.Setup(n => n.GetAsync($"jobs/{job.Id}/status", ExternalSystem.NodeWorker, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(workerResponse);
 
             var handler = CreateHandler(dbContext);
@@ -222,7 +222,7 @@ namespace SaaS.Application.UnitTests.Features.Worker.Commands.ProcessJobTimeouts
                 .Returns(DateTime.UtcNow.AddMinutes(-20));
 
             // Worker is unreachable
-            _networkClientMock.Setup(n => n.GetAsync($"jobs/status?job_id={job.Id}", ExternalSystem.NodeWorker, It.IsAny<CancellationToken>()))
+            _networkClientMock.Setup(n => n.GetAsync($"jobs/{job.Id}/status", ExternalSystem.NodeWorker, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((NetworkResult)null);
 
             var handler = CreateHandler(dbContext);

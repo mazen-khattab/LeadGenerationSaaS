@@ -15,7 +15,7 @@ namespace SaaS.Domain.Extensions
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, "Unmapped AccountStatus value.")
         };
 
-        public static AccountStatus ParseFromDb(string dbValue) => dbValue switch
+        public static AccountStatus ParseFromDbToAccountStatus(this string dbValue) => dbValue switch
         {
             "Active" => AccountStatus.ACTIVE,
             "Busy" => AccountStatus.BUSY,

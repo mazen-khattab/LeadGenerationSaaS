@@ -166,7 +166,7 @@ namespace SaaS.Application.Features.Worker.Commands.ProcessJobTimeouts
                 using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 timeoutCts.CancelAfter(TimeSpan.FromSeconds(_options.LivenessCheckTimeoutSeconds));
 
-                var endpoint = $"jobs/status?job_id={job.Id}";
+                var endpoint = $"jobs/{job.Id}/status";
                 var response = await _externalSystemClient.GetAsync(endpoint, ExternalSystem.NodeWorker, timeoutCts.Token);
 
                 if (response is null || !response.IsSuccess)
@@ -177,8 +177,7 @@ namespace SaaS.Application.Features.Worker.Commands.ProcessJobTimeouts
                 var body = response.Content;
                 var status = JsonSerializer.Deserialize<NodeWorkerJobStatusResponse>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                return string.Equals(status?.Status, "processing", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(status?.Status, "running", StringComparison.OrdinalIgnoreCase);
+                return string.Equals(status?.Status, JobStatus.PROCESSING.ToDbString(), StringComparison.OrdinalIgnoreCase);
             }
             catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
             {

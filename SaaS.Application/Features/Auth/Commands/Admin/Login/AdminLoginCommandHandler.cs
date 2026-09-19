@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +12,7 @@ using SaaS.Domain.Entities;
 
 namespace SaaS.Application.Features.Auth.Commands.Admin.Login
 {
-    internal class AdminLoginCommandHandler : IRequestHandler<AdminLoginCommand, ApiResponse<AuthLoginResponseDto>>
+    public class AdminLoginCommandHandler : IRequestHandler<AdminLoginCommand, ApiResponse<AuthLoginResponseDto>>
     {
         private readonly IAppDbContext _db;
         private readonly IPasswordHasherService _passwordHasher;

@@ -36,7 +36,7 @@ namespace SaaS.Application.Features.Worker.Commands.UpdateJobStatus
             }
 
             // Try to convert the coming status from the request to JobStatus enum, if it fails, we will just throw an error. This is to ensure that we only accept valid statuses.
-            var jobStatusEnum = request.Status.ParseFromDb();
+            var jobStatusEnum = request.Status.ParseFromDbToJobStatus();
 
             job.Status = jobStatusEnum.ToDbString();
 

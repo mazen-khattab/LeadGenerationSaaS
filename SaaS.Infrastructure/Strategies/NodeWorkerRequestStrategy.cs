@@ -26,6 +26,5 @@ namespace SaaS.Infrastructure.Strategies
             if (!string.IsNullOrWhiteSpace(_options.Value.WorkerSecret))
                 request.Headers.Add("X-Worker-Api-Key", _options.Value.WorkerSecret);
         }
-
     }
 }

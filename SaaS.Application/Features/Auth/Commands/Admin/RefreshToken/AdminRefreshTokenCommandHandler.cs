@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SaaS.Application.Common.Dtos;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SaaS.Application.Features.Auth.Commands.Admin.RefreshToken
 {
-    internal class AdminRefreshTokenCommandHandler : IRequestHandler<AdminRefreshTokenCommand, ApiResponse<AuthLoginResponseDto>>
+    public class AdminRefreshTokenCommandHandler : IRequestHandler<AdminRefreshTokenCommand, ApiResponse<AuthLoginResponseDto>>
     {
         private readonly IAppDbContext _db;
         private readonly IAuthSessionService _authSessionService;

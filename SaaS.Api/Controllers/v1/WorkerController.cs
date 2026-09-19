@@ -11,6 +11,8 @@ using SaaS.Domain.Enums;
 using System.Security.Claims;
 using SaaS.Application.Common.Dtos;
 using SaaS.Application.Features.Worker.Commands.DispatchMessaging;
+using SaaS.Application.Features.Worker.Commands.UpdateAccountStatus;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SaaS.Api.Controllers.v1
 {
@@ -31,6 +33,7 @@ namespace SaaS.Api.Controllers.v1
         private Guid GetUserId() => Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId) ? userId : Guid.Empty;
 
         [HttpPost("dispatch-messaging")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<DispatchMessagingResultDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
@@ -136,7 +139,43 @@ namespace SaaS.Api.Controllers.v1
             _logger.LogWarning("Failed to update job {JobId}. Reason: {Message}", jobId, errorResponse.Message);
             return StatusCode(statusCode, errorResponse);
         }
-        [HttpPost("logs")]
+
+        [HttpPut("accounts/{accountId}/status")]
+        [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateAccountStatus(int accountId, [FromBody] string status)
+        {
+            _logger.LogInformation("Worker initiated POST request to update account {AccountId} to status {Status}", accountId, status);
+
+            var command = new UpdateAccountStatusCommand(accountId, status);
+
+            var result = await _mediator.Send(command);
+
+            if (result is not null && result.IsSuccess)
+            {
+                _logger.LogInformation("Successfully updated account {AccountId} to status {Status}", accountId, status);
+                return Ok(result);
+            }
+
+            int statusCode = result!.ErrorType.ToHttpStatusCode();
+
+            var errorResponse = new ApiErrorResponse
+            {
+                IsSuccess = false,
+                StatusCode = statusCode,
+                Message = result?.Message ?? "Failure during operation.",
+                Path = HttpContext.Request.Path,
+                Method = HttpContext.Request.Method,
+                TraceId = HttpContext.TraceIdentifier
+            };
+
+            _logger.LogWarning("Failed to update account {AccountId}. Reason: {Message}", accountId, errorResponse.Message);
+            return StatusCode(statusCode, errorResponse);
+        }
+
+        [HttpPost("activity-log")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]

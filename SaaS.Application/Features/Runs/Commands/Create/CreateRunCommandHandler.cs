@@ -60,6 +60,25 @@ namespace SaaS.Application.Features.Runs.Commands.Create
             }
             _logger.LogDebug("Bot ownership confirmed. UserId: {UserId}, BotId: {BotId}", userId, botId);
 
+            _logger.LogDebug("Loading connected account. ConnectedAccountId: {ConnectedAccountId}", connectedAccountId);
+            // Fetch connected account with its cookie and bot
+            var account = await _context.ConnectedAccounts
+                .Include(a => a.Cookie)
+                .Include(a => a.Bot)
+                .FirstOrDefaultAsync(a => a.Id == connectedAccountId && a.UserId == userId, cancellationToken);
+
+            if (account is null)
+            {
+                _logger.LogWarning("Connected account was not found. ConnectedAccountId: {ConnectedAccountId}", connectedAccountId);
+                return ApiResponse<int>.Failure("Connected account not found.", ErrorType.NotFound);
+            }
+
+            if (!string.Equals(account.Status, AccountStatus.ACTIVE.ToDbString(), StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.LogWarning("Account {AccountId} is not active. Current status: {Status}", connectedAccountId, account.Status);
+                return ApiResponse<int>.Failure($"Account is currently {account.Status} and cannot be used.", ErrorType.ValidationError);
+            }
+
             _logger.LogDebug("Evaluating rate-limit and cooldown for UserId: {UserId}, BotId: {BotId}", userId, botId);
             var lastRun = await _context.Runs
                 .AsNoTracking()
@@ -82,25 +101,6 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                     _logger.LogWarning("Run creation blocked due to cooldown. UserId: {UserId}, BotId: {BotId}, NextAvailable: {NextAvailable}", userId, botId, nextAvailableTime);
                     return ApiResponse<int>.Failure($"Cooldown active. You can start a new run after {nextAvailableTime:g} UTC.", ErrorType.TooManyRequests);
                 }
-            }
-
-            _logger.LogDebug("Loading connected account. ConnectedAccountId: {ConnectedAccountId}", connectedAccountId);
-            // Fetch connected account with its cookie and bot
-            var account = await _context.ConnectedAccounts
-                .Include(a => a.Cookie)
-                .Include(a => a.Bot)
-                .FirstOrDefaultAsync(a => a.Id == connectedAccountId && a.UserId == userId, cancellationToken);
-
-            if (account is null)
-            {
-                _logger.LogWarning("Connected account was not found. ConnectedAccountId: {ConnectedAccountId}", connectedAccountId);
-                return ApiResponse<int>.Failure("Connected account not found.", ErrorType.NotFound);
-            }
-
-            if (!string.Equals(account.Status, AccountStatus.ACTIVE.ToDbString(), StringComparison.OrdinalIgnoreCase))
-            {
-                _logger.LogWarning("Account {AccountId} is not active. Current status: {Status}", connectedAccountId, account.Status);
-                return ApiResponse<int>.Failure($"Account is currently {account.Status} and cannot be used.", ErrorType.ValidationError);
             }
 
             _logger.LogDebug("Loading target group. TargetGroupId: {TargetGroupId}", targetGroupId);
