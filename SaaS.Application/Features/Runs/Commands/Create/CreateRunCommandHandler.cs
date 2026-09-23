@@ -123,7 +123,9 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                 .Select(us => new {
                     us.UserId,
                     us.CompanyName,
-                    us.CompanyPitch
+                    us.CompanyPitch,
+                    us.AIApiKeyExpirationDate,
+                    us.ScraperApiTokenExpirationDate
                 })
                 .FirstOrDefaultAsync(us => us.UserId == userId, cancellationToken);
 
@@ -132,6 +134,12 @@ namespace SaaS.Application.Features.Runs.Commands.Create
                 _logger.LogWarning("The compnay info is missing or not complete for UserId: {UserId} --- CompandyName: {CompanyName}, CompanyPitch: {CompanyPitch}",
                     userId, companyInfo?.CompanyName ?? "No company name", companyInfo?.CompanyPitch ?? "No company pitch");
                 return ApiResponse<int>.Failure("Some user settings is missing.", ErrorType.NotFound);
+            }
+
+            if (companyInfo.AIApiKeyExpirationDate <= DateTime.UtcNow || companyInfo.ScraperApiTokenExpirationDate <= DateTime.UtcNow)
+            {
+                _logger.LogWarning("API keys have expired for UserId: {UserId}", userId);
+                return ApiResponse<int>.Failure("API Keys have expired. Please renew them.", ErrorType.Unauthorized);
             }
 
             _logger.LogDebug("Decrypting cookies for connected account. ConnectedAccountId: {ConnectedAccountId}", connectedAccountId);

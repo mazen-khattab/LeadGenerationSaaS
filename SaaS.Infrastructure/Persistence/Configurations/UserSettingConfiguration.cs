@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SaaS.Domain.Entities;
 
@@ -42,6 +42,14 @@ public class UserSettingConfiguration : IEntityTypeConfiguration<UserSetting>
         builder.Property(us => us.ScraperApiTokenEncrypted)
             .HasColumnType("nvarchar(max)")
             .IsRequired(false);
+
+        builder.Property(us => us.AIApiKeyExpirationDate)
+            .IsRequired()
+            .HasDefaultValueSql("DATEADD(day, 7, GETUTCDATE())");
+
+        builder.Property(us => us.ScraperApiTokenExpirationDate)
+            .IsRequired()
+            .HasDefaultValueSql("DATEADD(day, 7, GETUTCDATE())");
 
         // The actual FK + Cascade delete behavior for this relationship is configured
         // once, on the UserConfiguration side, via HasForeignKey<UserSetting>(us => us.UserId).
