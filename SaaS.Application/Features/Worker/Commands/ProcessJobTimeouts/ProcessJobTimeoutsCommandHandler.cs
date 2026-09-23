@@ -45,33 +45,41 @@ namespace SaaS.Application.Features.Worker.Commands.ProcessJobTimeouts
 
         public async Task<ApiResponse<bool>> Handle(ProcessJobTimeoutsCommand request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Starting job timeout processing.");
             var processingStatus = JobStatus.PROCESSING.ToDbString();
 
+            _logger.LogInformation("Fetching jobs with status {Status} from the database.", processingStatus);
             var processingJobs = await _dbContext.Jobs
                 .Where(j => j.Status == processingStatus)
                 .ToListAsync(cancellationToken);
 
             if (processingJobs.Count == 0)
             {
+                _logger.LogInformation("No jobs currently in processing state. Exiting watchdog scan.");
                 _logger.LogDebug("No jobs currently in processing state.");
                 return ApiResponse<bool>.Success(true, "No jobs currently in processing state.");
             }
 
+            _logger.LogInformation("Found {Count} jobs in processing state. Checking for timeouts.", processingJobs.Count);
             _logger.LogDebug("Found {Count} jobs in processing state. Checking for timeouts.", processingJobs.Count);
 
             var (leadLookup, jobLeadIds) = await BuildLeadContextAsync(processingJobs, cancellationToken);
 
+            _logger.LogInformation("Lead context built. Evaluating each job for staleness.");
             var threshold = TimeSpan.FromMinutes(_options.TimeoutThresholdMinutes);
 
+            _logger.LogInformation("Timeout threshold set to {ThresholdMinutes} minutes.", _options.TimeoutThresholdMinutes);
             foreach (var job in processingJobs)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
+                    _logger.LogInformation("Cancellation requested. Exiting job timeout processing.");
                     break;
                 }
 
                 try
                 {
+                    _logger.LogInformation("Evaluating Job {JobId} of type {JobType}.", job.Id, job.Type);
                     var leadIds = jobLeadIds.TryGetValue(job.Id, out var ids) ? ids : Array.Empty<long>();
 
                     await EvaluateJobAsync(job, leadIds, leadLookup, threshold, cancellationToken);
@@ -82,40 +90,48 @@ namespace SaaS.Application.Features.Worker.Commands.ProcessJobTimeouts
                 }
             }
 
+            _logger.LogInformation("Job timeout processing completed.");
             return ApiResponse<bool>.Success(true, "Job timeouts processed successfully.");
         }
 
         private async Task<(Dictionary<long, DateTime> LeadLookup, Dictionary<long, IReadOnlyCollection<long>> JobLeadIds)>
             BuildLeadContextAsync(List<Job> processingJobs, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Building lead context for {JobCount} jobs.", processingJobs.Count);
             var jobLeadIds = new Dictionary<long, IReadOnlyCollection<long>>();
             var allLeadIds = new HashSet<long>();
 
             foreach (var job in processingJobs)
             {
+                _logger.LogInformation("Processing Job {JobId} of type {JobType}.", job.Id, job.Type);
                 if (!TryResolveJobType(job.Type, out var jobType) || !_strategies.TryGetValue(jobType, out var strategy))
                 {
                     _logger.LogWarning("No staleness strategy found for Job {JobId} of type {JobType}", job.Id, job.Type);
                     continue;
                 }
 
+                _logger.LogInformation("Extracting lead IDs for Job {JobId} using strategy for type {JobType}.", job.Id, job.Type);
                 var leadIds = strategy.ExtractLeadIds(job, _logger);
                 jobLeadIds[job.Id] = leadIds;
 
                 allLeadIds.UnionWith(leadIds);
             }
 
+            _logger.LogInformation("Total unique lead IDs to resolve: {LeadCount}", allLeadIds.Count);
             if (allLeadIds.Count == 0)
             {
+                _logger.LogInformation("No lead IDs found for any jobs. Skipping lead resolution.");
                 return (new Dictionary<long, DateTime>(), jobLeadIds);
             }
 
+            _logger.LogInformation("Resolving lead processed timestamps for {LeadCount} leads.", allLeadIds.Count);
             var leadLookup = await _dbContext.Leads
                 .AsNoTracking()
                 .Where(l => allLeadIds.Contains(l.Id) && l.ProcessedAt != null)
                 .Select(l => new { l.Id, ProcessedAt = l.ProcessedAt!.Value })
                 .ToDictionaryAsync(l => l.Id, l => l.ProcessedAt, cancellationToken);
 
+            _logger.LogInformation("Built context for {JobCount} jobs. Resolved {LeadCount} total leads.", processingJobs.Count, allLeadIds.Count);
             _logger.LogDebug("Built context for {JobCount} jobs. Resolved {LeadCount} total leads.", processingJobs.Count, allLeadIds.Count);
 
             return (leadLookup, jobLeadIds);
@@ -123,15 +139,20 @@ namespace SaaS.Application.Features.Worker.Commands.ProcessJobTimeouts
 
         private async Task EvaluateJobAsync(Job job, IReadOnlyCollection<long> leadIds, Dictionary<long, DateTime> leadLookup, TimeSpan threshold, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Evaluating Job {JobId} of type {JobType} for staleness.", job.Id, job.Type);
             var lastActivity = job.CreatedAt;
 
+            _logger.LogDebug("Initial last activity for Job {JobId} set to CreatedAt: {CreatedAt}", job.Id, lastActivity);
             if (TryResolveJobType(job.Type, out var jobType) && _strategies.TryGetValue(jobType, out var strategy))
             {
+                _logger.LogInformation("Using staleness strategy for Job {JobId} of type {JobType} to determine last activity.", job.Id, job.Type);
                 lastActivity = strategy.GetLastActivity(job, leadIds, leadLookup);
             }
 
+            _logger.LogInformation("Last activity for Job {JobId} determined to be: {LastActivity}", job.Id, lastActivity);
             if (DateTime.UtcNow - lastActivity <= threshold)
             {
+                _logger.LogInformation("Job {JobId} is not stale yet. Last activity: {LastActivity}", job.Id, lastActivity);
                 _logger.LogDebug("Job {JobId} is not stale yet. Last activity: {LastActivity}", job.Id, lastActivity);
                 return; // Not stale yet.
             }
@@ -161,8 +182,11 @@ namespace SaaS.Application.Features.Worker.Commands.ProcessJobTimeouts
 
         private async Task<bool> IsWorkerStillProcessingAsync(Job job, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Checking if worker is still processing Job {JobId}.", job.Id);
             try
             {
+                _logger.LogDebug("Sending liveness check request for Job {JobId} to external system.", job.Id);
+                _logger.LogInformation("Liveness check timeout is set to {TimeoutSeconds} seconds.", _options.LivenessCheckTimeoutSeconds);
                 using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 timeoutCts.CancelAfter(TimeSpan.FromSeconds(_options.LivenessCheckTimeoutSeconds));
 
@@ -171,9 +195,11 @@ namespace SaaS.Application.Features.Worker.Commands.ProcessJobTimeouts
 
                 if (response is null || !response.IsSuccess)
                 {
+                    _logger.LogWarning("Liveness check for Job {JobId} failed with status code {StatusCode}. Treating worker as unreachable.", job.Id, response?.StatusCode);
                     return false;
                 }
 
+                _logger.LogInformation("Liveness check for Job {JobId} succeeded. Parsing response.", job.Id);
                 var body = response.Content;
                 var status = JsonSerializer.Deserialize<NodeWorkerJobStatusResponse>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
@@ -193,10 +219,12 @@ namespace SaaS.Application.Features.Worker.Commands.ProcessJobTimeouts
 
         private async Task<int> TryMarkJobFailedAsync(Job job, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Marking Job {JobId} as FAILED in the database.", job.Id);
             job.Status = JobStatus.FAILED.ToDbString();
 
             try 
             {
+                _logger.LogInformation("Attempting to update ConnectedAccount status for Job {JobId}.", job.Id);
                 var payload = JsonSerializer.Deserialize<Dictionary<string, object>>(job.PayloadJson);
                 if (payload != null && payload.TryGetValue("accountId", out var accountIdObj) && int.TryParse(accountIdObj.ToString(), out int accountId))
                 {
