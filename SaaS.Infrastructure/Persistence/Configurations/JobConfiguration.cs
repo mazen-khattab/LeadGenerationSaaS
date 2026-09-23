@@ -46,10 +46,10 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         // by a Run and have no meaning once that Run is gone. Only one path reaches
         // Job through Run, so this doesn't create the multiple-cascade-path problem
         // (SQL Server Error 1750) that the Restrict/SetNull choices elsewhere avoid.
-        builder.HasOne(j => j.Run)
-            .WithMany(r => r.Jobs)
-            .HasForeignKey(j => j.RunId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //builder.HasOne(j => j.Run)
+        //    .WithMany(r => r.Jobs)
+        //    .HasForeignKey(j => j.RunId)
+        //    .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(j => j.User)
             .WithMany(u => u.Jobs)

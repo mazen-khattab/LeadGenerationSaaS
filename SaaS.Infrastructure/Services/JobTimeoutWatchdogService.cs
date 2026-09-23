@@ -26,7 +26,8 @@ namespace SaaS.Infrastructure.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var interval = TimeSpan.FromSeconds(_options.CheckIntervalMinutes);
+            //var interval = TimeSpan.FromMinutes(_options.CheckIntervalMinutes);
+            var interval = TimeSpan.FromMinutes(1);
 
             _logger.LogInformation("JobTimeoutWatchdogService is starting. CheckInterval={Interval}m, TimeoutThreshold={Threshold}m", 
                 _options.CheckIntervalMinutes, _options.TimeoutThresholdMinutes);

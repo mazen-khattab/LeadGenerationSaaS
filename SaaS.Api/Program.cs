@@ -60,7 +60,8 @@ builder.Services.AddCors(options =>
                    "http://localhost:5173",
                    "https://mazenkhtab321.app.n8n.cloud/webhook-test/5c2de115-1f5c-41ab-a572-be60392aea3f",
                    "https://mazenkhtab321.app.n8n.cloud/webhook-test",
-                   "https://mazenkhtab321.app.n8n.cloud"
+                   "https://mazenkhtab321.app.n8n.cloud",
+                   "http://localhost:3000"
                )
                .AllowAnyHeader()
                .AllowAnyMethod()

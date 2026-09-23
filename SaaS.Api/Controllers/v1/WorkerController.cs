@@ -74,17 +74,17 @@ namespace SaaS.Api.Controllers.v1
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateLeadStatus(long leadId, [FromBody] string status)
+        public async Task<IActionResult> UpdateLeadStatus(long leadId, [FromBody] UpdateStatusDto statusDto)
         {
-            _logger.LogInformation("Worker initiated PUT request to update lead {LeadId} to status {Status}", leadId, status);
+            _logger.LogInformation("Worker initiated PUT request to update lead {LeadId} to status {Status}", leadId, statusDto.Status);
 
-            var command = new UpdateLeadStatusCommand(leadId, status);
+            var command = new UpdateLeadStatusCommand(leadId, statusDto.Status);
 
             var result = await _mediator.Send(command);
 
             if (result is not null && result.IsSuccess)
             {
-                _logger.LogInformation("Successfully updated lead {LeadId} to status {Status}", leadId, status);
+                _logger.LogInformation("Successfully updated lead {LeadId} to status {Status}", leadId, statusDto.Status);
                 return Ok(result);
             }
 
@@ -109,18 +109,18 @@ namespace SaaS.Api.Controllers.v1
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateJobStatus(long jobId, [FromBody] string status)
+        public async Task<IActionResult> UpdateJobStatus(long jobId, [FromBody] UpdateStatusDto statusDto)
         {
-            _logger.LogInformation("Worker initiated PUT request to update job {JobId} to status {Status}", jobId, status);
+            _logger.LogInformation("Worker initiated PUT request to update job {JobId} to status {Status}", jobId, statusDto.Status);
 
             // Bind the route parameter to the command model
-            var command = new UpdateJobStatusCommand(jobId, status);
+            var command = new UpdateJobStatusCommand(jobId, statusDto.Status);
 
             var result = await _mediator.Send(command);
 
             if (result is not null && result.IsSuccess)
             {
-                _logger.LogInformation("Successfully updated job {JobId} to status {Status}", jobId, status);
+                _logger.LogInformation("Successfully updated job {JobId} to status {Status}", jobId, statusDto.Status);
                 return Ok(result);
             }
 
@@ -145,17 +145,17 @@ namespace SaaS.Api.Controllers.v1
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateAccountStatus(int accountId, [FromBody] string status)
+        public async Task<IActionResult> UpdateAccountStatus(int accountId, [FromBody] UpdateStatusDto statusDto)
         {
-            _logger.LogInformation("Worker initiated POST request to update account {AccountId} to status {Status}", accountId, status);
+            _logger.LogInformation("Worker initiated POST request to update account {AccountId} to status {Status}", accountId, statusDto.Status);
 
-            var command = new UpdateAccountStatusCommand(accountId, status);
+            var command = new UpdateAccountStatusCommand(accountId, statusDto.Status);
 
             var result = await _mediator.Send(command);
 
             if (result is not null && result.IsSuccess)
             {
-                _logger.LogInformation("Successfully updated account {AccountId} to status {Status}", accountId, status);
+                _logger.LogInformation("Successfully updated account {AccountId} to status {Status}", accountId, statusDto.Status);
                 return Ok(result);
             }
 

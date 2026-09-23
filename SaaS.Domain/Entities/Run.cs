@@ -26,7 +26,7 @@ namespace SaaS.Domain.Entities
         public TargetGroup? Group { get; set; }
         public ConnectedAccount? Account { get; set; }
 
-        public ICollection<Job> Jobs { get; set; } = new List<Job>();
+        //public ICollection<Job> Jobs { get; set; } = new List<Job>();
         public ICollection<Lead> Leads { get; set; } = new List<Lead>();
     }
 }
